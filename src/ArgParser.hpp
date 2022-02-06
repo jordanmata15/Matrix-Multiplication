@@ -25,7 +25,7 @@ class ArgParser {
   public:
     Arguments* args;
     ArgParser() { args = new Arguments(); }
-    ~ArgParser(){ free(args); }
+    ~ArgParser(){ delete args; }
     void prompt(int* ptrToSet);
     Arguments* parseArgs();
 };

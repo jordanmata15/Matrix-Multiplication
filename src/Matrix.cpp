@@ -1,5 +1,4 @@
 #include "Matrix.hpp"
-#include "iostream" // TODO
 
 Matrix::Matrix(int m, int n):rows(m), cols(n){
   matrix = new int*[m];
@@ -11,9 +10,9 @@ Matrix::Matrix(int m, int n):rows(m), cols(n){
 
 Matrix::~Matrix(){
   for (int i=0; i<rows; i++){
-    free(matrix[i]);
+    delete[] matrix[i];
   }
-  free(matrix);
+  delete[] matrix;
 }
 
 void Matrix::randomize(int limit){
