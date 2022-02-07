@@ -16,6 +16,7 @@ Matrix::~Matrix(){
 }
 
 void Matrix::randomize(int limit){
+  srand(time(NULL));
   for (int i=0; i<rows; ++i){
     for (int j=0; j<cols; ++j){
       matrix[i][j] = rand() % limit;
