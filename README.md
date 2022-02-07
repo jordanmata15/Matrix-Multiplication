@@ -1,16 +1,18 @@
 # Serial-Matrix-Multiplication
 
-## Usage
-On execution, users are prompted to enter the dimensions of the 2 matrices. There are 4 prompts total (one for each dimension). If any of the 4 dimensions entered is invalid, the program will reset all input and prompt from the beginning.
+## Overview
+A program for multiplying 2 matrices (not necessarily square). Users provide the dimensions, after which, the program randomly fills them with an integer between 0-ULIMIT (ULIMIT is defined in MatrixMultiplication.hpp). After which, the program will perform the multiplication on three algorithms using different indexing for memory accesses. This shows the extra overhead incurred on how data is accessed. Since C++ is a row major language, we should be accessing contiguous rows of data whenever we can as opposed to switching between rows.
 
-On successful input of all 4 dimensions, the program will generate 2 matrices based on the size of the 4 input. Let the dimensions entered for A be *n*,*m* and the dimensions entered for B be *p*,*q*. Then the program will randomly fill an *n*X*m* and a *p*X*q* matrix with values ranging from 0 to ULIMIT (Default=10, set in MatrixMultiplication.hpp).
+On execution, it prompts the user for dimensions of matrices A and B. Then prompts the user: 
+- Should A/B be printed out (once)?
+- Should C should be printed out (once)? 
+- Should the averages of each algorithm should be printed out? 
+- How many runs of each iteration should occur for the averages?
 
-The program will perform the matrix multiplication with each algorithm NUM_ITERS (default=3, set in MatrixMultiplication.hpp) amount of times and average the time taken by algorithm.
-
-### Invalid Input
-- Non integer characters
-- Integers less than 1
-- Inner dimensions unequal. ie. Let A be an *n*X*m* matrix and B be a *p*X*q* matrix. Invalid if *m*!=*p*.
+## The algorithms
+- Algorithm 0: Uses *ijk* indexing. This uses contiguous row and column accesses. Because it uses both, it's not the worst.
+- Algorithm 1: Uses *jki* indexing. This uses contiguous column accesses only. Each read is in a different row, so it has more overhead and is very slow. 
+- Algorithm 2: Uses *ikj* indexing. This uses contiguous row accesses only. It leverages C++ row major structure so it is the fastest of the 3.
 
 ## Notes
 While it is better OOP practice to encapsulate the Matrix object and have setters and getters, we make the int** matrix public so that we can manipulate the raw pointers. This avoids the overhead of having to call something like getXY(x,y) for every access (*n*<sup>3</sup> times). For large *n*, this can be significant overhead.
