@@ -1,9 +1,5 @@
 #include "MatrixMultiplication.hpp"
 
-#define DISPLAY_A_B  // Display matrices A/B once before the multiplication.
-#define DISPLAY_C    // Display C after EACH algorithm and iteration.
-#define AVERAGES     // Calculate and display averages at the end
-
 
 MatrixMultiplication::MatrixMultiplication(Matrix* aInput, 
                                             Matrix* bInput, 
@@ -124,65 +120,67 @@ int main(int argc, char** argv){
   Matrix* b = new Matrix(args->rowsB, args->colsB);
   b->randomize(ULIMIT);
   
-  #ifdef DISPLAY_A_B
-  std::cout << NEW_SECTION << "\tMatrices A and B\t" << NEW_SECTION;
-  std::cout << "Matrix A:\n";
-  a->printMatrix();
-  std::cout << "Matrix B:\n";
-  b->printMatrix();
-  #endif
+  if (args->displayAB){
+    std::cout << NEW_SECTION << "\tMatrices A and B\t" << NEW_SECTION;
+    std::cout << "Matrix A:\n";
+    a->printMatrix();
+    std::cout << "Matrix B:\n";
+    b->printMatrix();
+  }
 
   std::vector<std::string> fileNames = {OUT_FILE1, OUT_FILE2, OUT_FILE3};
   DataManager* dm = new DataManager(fileNames);
   MatrixMultiplication mm = MatrixMultiplication(a, b, dm); 
   Matrix* product;
 
+  std::cout << NEW_SECTION << "\tRunning matrix multiplication\t" << NEW_SECTION;
+
   /* Get multiple runs of each algorithm for a good average. Randomizing values 
    * in A/B each time is pointless since we don't actually care about their 
    * values, just time benchmarks.
    */
-  for(int i=0; i<NUM_ITERS; ++i){
+  for(int i=0; i<args->numRuns; ++i){
     
     // algorithm 0
     mm.reinitializeC();
     product = mm.algorithm0();
-    #ifdef DISPLAY_C
-    if (i==0){
-      std::cout << NEW_SECTION << "\tMatrix C\t" << NEW_SECTION;
-      std::cout << "\nProduct using algorithm 0:" << std::endl;
-      product->printMatrix();
+    if (args->displayC){
+      if (i==0){
+        std::cout << NEW_SECTION << "\tMatrix C\t" << NEW_SECTION;
+        std::cout << "\nProduct using algorithm 0:" << std::endl;
+        product->printMatrix();
+      }
     }
-    #endif 
     
     // algorithm 1
     mm.reinitializeC();
     product = mm.algorithm1();
-    #ifdef DISPLAY_C
-    if (i==0){
-      std::cout << "\nProduct using algorithm 1:" << std::endl;
-      product->printMatrix();
+    if (args->displayC){
+      if (i==0){
+        std::cout << "\nProduct using algorithm 1:" << std::endl;
+        product->printMatrix();
+      }
     }
-    #endif 
 
     // algorithm 2
     mm.reinitializeC();
     product = mm.algorithm2();
-    #ifdef DISPLAY_C
-    if (i==0){
-      std::cout << "\nProduct using algorithm 2:" << std::endl;
-      product->printMatrix();
+    if (args->displayC){
+      if (i==0){
+        std::cout << "\nProduct using algorithm 2:" << std::endl;
+        product->printMatrix();
+      }
     }
-    #endif 
   }
   
-  #ifdef AVERAGES
-  std::cout << NEW_SECTION << "\tAVERAGES\t" << NEW_SECTION;
-  std::cout << "Avg runtimes (in sec) over " << NUM_ITERS << " iterations:\n";
-  for (int i=0; i<NUM_ALGORITHMS; ++i){
-    double avgRuntimeSeconds = dm->takeAverageOfAlg(i);
-    std::cout << "Algorithm " << i << ": " << avgRuntimeSeconds << std::endl;
+  if (args->displayAverages){
+    std::cout << NEW_SECTION << "\tAVERAGES\t" << NEW_SECTION;
+    std::cout << "Avg runtimes (in sec) over " << args->numRuns << " iterations:\n";
+    for (int i=0; i<NUM_ALGORITHMS; ++i){
+      double avgRuntimeSeconds = dm->takeAverageOfAlg(i);
+      std::cout << "Algorithm " << i << ": " << avgRuntimeSeconds << std::endl;
+    }
   }
-  #endif
 
   delete a;
   delete b;

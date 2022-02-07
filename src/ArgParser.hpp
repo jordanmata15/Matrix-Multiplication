@@ -6,6 +6,8 @@
 
 #define QUIT "q"
 #define INVALID -1
+#define ULIMIT 10   // largest value for each entry in a matrix
+#define NUM_ITERS 3 // runs for our average
 
 /**
  * Arguments object to hold the values of the desired inputs given by the user.
@@ -16,7 +18,24 @@ class Arguments{
     int colsA;
     int rowsB;
     int colsB;
-    Arguments():rowsA(INVALID), colsA(INVALID), rowsB(INVALID), colsB(INVALID){}
+    bool displayAB;
+    bool displayC;
+    bool displayAverages;
+    int numRuns;
+
+    /**
+     * Basic constructor
+     * 
+     * TODO
+     */
+    Arguments():rowsA(INVALID), 
+                colsA(INVALID), 
+                rowsB(INVALID), 
+                colsB(INVALID),
+                displayAB(false), 
+                displayC(false), 
+                displayAverages(true), 
+                numRuns(NUM_ITERS){}
 };
 
 
@@ -54,7 +73,11 @@ class ArgParser {
      *        for. Whatever integer input user the user enters will be stored in
      *        this variable.
      */
-    void prompt(int* ptrToSet);
+    void promptNumeric(int* ptrToSet);
+    
+    void promptYN(bool* ptrToSet);
+    
+    void promptOptional();
 
     /**
      * Method used to verify all arguments are valid. For any invalid, it will

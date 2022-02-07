@@ -1,9 +1,21 @@
-make clean
-make OPTLEVEL=-O0
+#!/bin/bash
+
+BUILD_OUTPUT="/dev/null"
+#BUILD_OUTPUT=/dev/stdout
+
+
+echo "*******************************************"
+echo "     Running With Optimization level 0"
+echo "*******************************************"
+make clean > $BUILD_OUTPUT
+make OPTLEVEL=-O0 > $BUILD_OUTPUT
 cat run_config.txt | ./MatrixMultiplication
 echo
 
-make clean
-make OPTLEVEL=-O3
+echo "*******************************************"
+echo "     Running With Optimization level 3"
+echo "*******************************************"
+make clean > $BUILD_OUTPUT
+make OPTLEVEL=-O3 > $BUILD_OUTPUT
 cat run_config.txt | ./MatrixMultiplication
 echo
