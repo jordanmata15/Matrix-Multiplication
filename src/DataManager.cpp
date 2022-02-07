@@ -14,9 +14,6 @@ DataManager::DataManager(std::vector<std::string> fileNamesIn){
   }
 }
 
-DataManager::~DataManager(){
-}
-
 void DataManager::openOutputFiles(){
   int i=0;
   for (auto fname:fileNames){
@@ -44,27 +41,21 @@ void DataManager::readTimes(){
   int i=0;
   for (auto fname:fileNames){
     std::ifstream* s = new std::ifstream(fname);
-    fileInStreams.at(i) = s;
-    i++;
-  }
-
-  for (int i=0; i<3; i++){
-    readSingleAlgTimes(i);
-  }
-
-  for (auto s:fileInStreams){
+    readSingleAlgTimes(&times.at(i), s);
     s->close();
     delete s;
+    i++;
   }
 }
 
-void DataManager::readSingleAlgTimes(int algNum){
+
+void DataManager::readSingleAlgTimes(std::vector<double>* times, std::ifstream* inputStream){
   double time;
   std::string line;
-  std::ifstream* s = fileInStreams.at(algNum);
-  while( std::getline(*s, line) ){
+
+  while( std::getline(*inputStream, line) ){
     time = std::stod(line.c_str());
-    times.at(algNum).push_back(time);
+    times->push_back(time);
   }
 }
 
@@ -100,12 +91,10 @@ double DataManager::average(std::vector<double> intVec){
   if (intVec.size() == 0){
     return -1;
   }
-
   for (auto i:intVec){
     sum += i;
   }
-  sum /=  intVec.size();
-  return (double) sum;
+  return (double) sum/intVec.size();
 }
 
 

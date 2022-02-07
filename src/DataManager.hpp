@@ -19,13 +19,12 @@ class DataManager{
     std::vector<std::vector<double>> times; 
     void openOutputFiles();
     void closeOutputFiles();
-    void readSingleAlgTimes(int algNum);
+    void readSingleAlgTimes(std::vector<double>* times, std::ifstream* inputStream);
     double average(std::vector<double> intVec);
     double calculateElapsedSeconds(struct timeval* tv_elapsed);
 
   public:
     DataManager(std::vector<std::string> fileNamesIn);
-    ~DataManager();
     void writeTimesToFile();
     void recordTime(int streamNumber, struct timeval* tv_elapsed);
     void readTimes();
