@@ -15,13 +15,18 @@
 #define OUT_FILE3 "./algorithm2.log"
 
 
+/**
+ * Class used to represent the matrix multiplication operation. Stores two 
+ * matrices (A,B) and allows calls on different multiplication algorithms
+ * for benchmarking.
+ */
 class MatrixMultiplication{
 
   private:
     Matrix* a;
     Matrix* b;
     Matrix* c;
-    DataManager* dataMgr;
+    DataManager* dataMgr; // container for times of each algorithm
 
   public:
     /**
