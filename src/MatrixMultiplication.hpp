@@ -4,7 +4,6 @@
 #include "ArgParser.hpp"
 #include "Matrix.hpp"
 #include "DataManager.hpp"
-
 #include <sys/time.h>
 
 #define ULIMIT 10   // largest value for each entry in a matrix
