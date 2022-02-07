@@ -23,9 +23,7 @@ class Arguments{
     int numRuns;
 
     /**
-     * Basic constructor
-     * 
-     * TODO
+     * Basic constructor. sets default values.
      */
     Arguments():rowsA(INVALID), 
                 colsA(INVALID), 
@@ -43,6 +41,7 @@ class Arguments{
  * Arguments object with the users desired input.
  */
 class ArgParser {
+
   private:
     /**
      * Validates an individual argument.
@@ -52,6 +51,31 @@ class ArgParser {
      */
     bool validArgument(int value);
 
+    /**
+     * Prompts the user for input to populate the Arguments object.
+     *
+     * @param ptrToSet A pointer to the object we want the user to give a value
+     *        for. Whatever integer input user the user enters will be stored in
+     *        this variable.
+     */
+    void promptNumeric(int* ptrToSet);
+   
+    /**
+     * Prompts the user for a y/n input and sets the stored variable to that 
+     * value.
+     * 
+     * @param ptrToSet A pointer to the object we want the user to give a value
+     *        for. If users input 'y', it will save true, 'q' exits the program,
+     *        anything else defaults to false.
+     */
+    void promptYN(bool* ptrToSet);
+    
+    /**
+     * Calls prompts for all optional values. Optional in the sense that they
+     * have valid default values.
+     */
+    void promptOptional();
+  
   public:
     Arguments* args;
 
@@ -64,19 +88,6 @@ class ArgParser {
      * Simple destructor that frees the arguments once we're done with them.
      */
     ~ArgParser(){ delete args; }
-
-    /**
-     * Promts the user for input to populate the Arguments object.
-     *
-     * @param ptrToSet A pointer to the object we want the user to give a value
-     *        for. Whatever integer input user the user enters will be stored in
-     *        this variable.
-     */
-    void promptNumeric(int* ptrToSet);
-    
-    void promptYN(bool* ptrToSet);
-    
-    void promptOptional();
 
     /**
      * Method used to verify all arguments are valid. For any invalid, it will
