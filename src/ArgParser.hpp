@@ -6,7 +6,6 @@
 
 #define QUIT "q"
 #define INVALID -1
-#define ULIMIT 10   // largest value for each entry in a matrix
 #define NUM_ITERS 3 // runs for our average
 
 /**
