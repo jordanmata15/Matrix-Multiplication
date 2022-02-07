@@ -1,15 +1,13 @@
 #ifndef DATA_MANAGER_HPP
 #define DATA_MANAGER_HPP
 
-#include <iostream>
 #include <fstream>
-#include <string>
 #include <vector>
 #include <sys/time.h>
 
 /**
- * Class used to make it easier to record and get statistics on the times each 
- * algorithm takes to run.
+ * Class used to store times for each algorithm and generate statistics on
+ * the set of time data.
  */
 class DataManager{
   
