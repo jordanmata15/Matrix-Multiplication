@@ -1,5 +1,5 @@
-#ifndef ARG_PARSER_H
-#define ARG_PARSER_H
+#ifndef ARG_PARSER_HPP
+#define ARG_PARSER_HPP
 
 #include <getopt.h>
 #include <iostream>
@@ -30,4 +30,4 @@ class ArgParser {
     Arguments* parseArgs();
 };
 
-#endif // ARG_PARSER_H
+#endif // ARG_PARSER_HPP

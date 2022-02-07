@@ -1,3 +1,6 @@
+#ifndef MATRIX_MULTIPLICATION_HPP
+#define MATRIX_MULTIPLICATION_HPP
+
 #include "ArgParser.hpp"
 #include "Matrix.hpp"
 #include "DataManager.hpp"
@@ -21,3 +24,5 @@ class MatrixMultiplication{
     Matrix* algorithm2();
     Matrix* algorithm3();
 };
+
+#endif // MATRIX_MULTIPLICATION_HPP
