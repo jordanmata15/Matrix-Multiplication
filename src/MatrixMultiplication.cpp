@@ -150,9 +150,10 @@ int main(int argc, char** argv){
   }
   
   #ifdef AVERAGES
+  std::cout << "Average runtimes (in seconds) over " << NUM_ITERS << " iterations:\n";
   for (int i=1; i<=3; ++i){
     double avgRuntimeSeconds = dm->takeAverageOfAlg(i);
-    std::cout << "Runtime of algorithm" << i << ": " << avgRuntimeSeconds << std::endl;
+    std::cout << "Algorithm " << i << ": " << avgRuntimeSeconds << std::endl;
   }
   #endif
 
