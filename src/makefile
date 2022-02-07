@@ -5,7 +5,7 @@ CXXFLAGS=-std=c++11 -g -Wall
 $(PROGRAM):	$(PROGRAM).o ArgParser.o DataManager.o Matrix.o
 	$(CXX) $(CXXFLAGS) $(PROGRAM).o ArgParser.o Matrix.o DataManager.o -o $(PROGRAM)
 
-$(PROGRAM).o: $(PROGRAM).cpp
+$(PROGRAM).o: $(PROGRAM).cpp $(PROGRAM).hpp
 
 ArgParser.o:	ArgParser.cpp ArgParser.hpp
 
