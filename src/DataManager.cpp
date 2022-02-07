@@ -1,7 +1,7 @@
 #include "DataManager.hpp"
-#include <iostream>
 
 
+// simple constructor
 DataManager::DataManager(std::vector<std::string> fileNamesIn){
   fileNames = fileNamesIn;
   numAlgorithms = fileNamesIn.size();
@@ -14,15 +14,19 @@ DataManager::DataManager(std::vector<std::string> fileNamesIn){
   }
 }
 
+
+// open files we write out times to
 void DataManager::openOutputFiles(){
   int i=0;
   for (auto fname:fileNames){
     std::ofstream* s = new std::ofstream(fname);
     fileOutStreams.at(i) = s;
-    i++;
+    ++i;
   }
 }
 
+
+// close files we write out times to
 void DataManager::closeOutputFiles(){
   for (auto s:fileOutStreams){
     s->close();
@@ -30,6 +34,8 @@ void DataManager::closeOutputFiles(){
   }
 }
 
+
+// deletes files with filenames in the vector passed into the constructor
 void DataManager::deleteFiles(){
   for (auto fname:fileNames){
     std::remove(fname.c_str());
@@ -37,6 +43,8 @@ void DataManager::deleteFiles(){
 }
 
 
+/* read in the times for all algorithms from a file and populate the appropriate
+ * vector */
 void DataManager::readTimes(){
   int i=0;
   for (auto fname:fileNames){
@@ -44,12 +52,15 @@ void DataManager::readTimes(){
     readSingleAlgTimes(&times.at(i), s);
     s->close();
     delete s;
-    i++;
+    ++i;
   }
 }
 
 
-void DataManager::readSingleAlgTimes(std::vector<double>* times, std::ifstream* inputStream){
+/* Read a specific input stream line by line into the vector.
+ */
+void DataManager::readSingleAlgTimes(std::vector<double>* times, 
+                                     std::ifstream* inputStream){
   double time;
   std::string line;
 
@@ -60,6 +71,7 @@ void DataManager::readSingleAlgTimes(std::vector<double>* times, std::ifstream* 
 }
 
 
+// write out all algorithms to their specified files
 void DataManager::writeTimesToFile(){
   deleteFiles();
   openOutputFiles();
@@ -69,38 +81,40 @@ void DataManager::writeTimesToFile(){
       *(fileOutStreams.at(i)) << time << std::endl;
     }
   }
-
   closeOutputFiles();
 }
 
 
-void DataManager::recordTime(int streamNumber, struct timeval* tv_elapsed){
-  int algNum = streamNumber-1;
-  double elapsedMicro = calculateElapsedSeconds(tv_elapsed);
+// push the time to the vector corresponding to this algorithm
+void DataManager::recordTime(int algNum, struct timeval* tvElapsed){
+  double elapsedMicro = calculateElapsedSeconds(tvElapsed);
   times.at(algNum).push_back(elapsedMicro);
 }
 
 
+// get the average of a particular algorithm's elapsed times
 double DataManager::takeAverageOfAlg(int algNum){
-  return average(times.at(algNum-1));
+  return average(times.at(algNum));
 }
 
 
-double DataManager::average(std::vector<double> intVec){
-  long double sum = 0;
-  if (intVec.size() == 0){
-    return -1;
+// average the values in the provided vector
+double DataManager::average(std::vector<double> timesVec){
+  long double sum = 0; // use a long double to avoid overflow
+  if (timesVec.size() == 0){
+    return 0;
   }
-  for (auto i:intVec){
+  for (auto i:timesVec){
     sum += i;
   }
-  return (double) sum/intVec.size();
+  return (double) sum/timesVec.size();
 }
 
 
-double DataManager::calculateElapsedSeconds(struct timeval* tv_elapsed){
+// convert a timeval struct holding the delta time to a numerical (double) value
+double DataManager::calculateElapsedSeconds(struct timeval* tvElapsed){
   // convert to microseconds and back to force everything after the decimal to remain
-	double elapsedSecondsMicro = tv_elapsed->tv_sec*1000000 + (tv_elapsed->tv_usec);
+	double elapsedSecondsMicro = tvElapsed->tv_sec*1000000 + (tvElapsed->tv_usec);
 	double elapsedSeconds = elapsedSecondsMicro /= 1000000;
   return elapsedSeconds;
 }

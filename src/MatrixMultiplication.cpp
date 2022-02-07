@@ -1,8 +1,9 @@
 #include "MatrixMultiplication.hpp"
 
-// #define DEBUG
-// #define VERBOSE
-#define AVERAGES
+#define DISPLAY_A_B  // Display matrices A/B once before the multiplication.
+#define DISPLAY_C    // Display C after EACH algorithm and iteration.
+#define AVERAGES     // Calculate and display averages at the end
+
 
 MatrixMultiplication::MatrixMultiplication(Matrix* aInput, 
                                             Matrix* bInput, 
@@ -13,30 +14,37 @@ MatrixMultiplication::MatrixMultiplication(Matrix* aInput,
   dataMgr = dm;
 }
 
+
 MatrixMultiplication::~MatrixMultiplication(){
   delete c;
 }
 
 
 void MatrixMultiplication::reinitializeC(){
-  c->reinitialize();
+  c->reinitialize(); // zero fill C
 }
 
-// leverages both majors. Best/worst of both. (needs to be zero filled beforehand)
-Matrix* MatrixMultiplication::algorithm1(){
+
+// Uses both row/column major operations. Best/worst of both.
+Matrix* MatrixMultiplication::algorithm0(){
+  
   int a_rows = a->getNumRows();
   int a_cols = a->getNumCols(); // equal to b_rows
   int b_cols = b->getNumCols();
 
+  /* We could define matrix->getXY(x,y) which would be better from an OOP 
+   * perspective, but direct access to the raw array memory is faster as it 
+   * avoids the overhead of a function call for EACH access.
+   */
   int** a_raw = a->getMatrix();
   int** b_raw = b->getMatrix();
   int** c_raw = c->getMatrix();
   
   struct timeval startTime, endTime, elapsedTime;
   gettimeofday(&startTime, NULL);
-  for (int i=0; i<a_rows; i++){
-    for (int j=0; j<b_cols; j++){
-      for (int k=0; k<a_cols; k++){
+  for (int i=0; i<a_rows; ++i){
+    for (int j=0; j<b_cols; ++j){
+      for (int k=0; k<a_cols; ++k){
         c_raw[i][j] += a_raw[i][k] * b_raw[k][j];
       }
     }
@@ -44,27 +52,28 @@ Matrix* MatrixMultiplication::algorithm1(){
   gettimeofday(&endTime, NULL);
 
   timersub(&endTime, &startTime, &elapsedTime);
-  dataMgr->recordTime(1, &elapsedTime);
+  dataMgr->recordTime(0, &elapsedTime);
   return c;
 }
 
 
-// leverages column major (needs to be zero filled beforehand)
-Matrix* MatrixMultiplication::algorithm2(){
+// leverages column major. Very Bad for C++.
+Matrix* MatrixMultiplication::algorithm1(){
   int a_rows = a->getNumRows();
   int a_cols = a->getNumCols(); // equal to b_rows
   int b_cols = b->getNumCols();
 
+  /* same raw access as algorithm 0 */
   int** a_raw = a->getMatrix();
   int** b_raw = b->getMatrix();
   int** c_raw = c->getMatrix();
   
   struct timeval startTime, endTime, elapsedTime;
   gettimeofday(&startTime, NULL);
-  for (int j=0; j<b_cols; j++){
-    for (int k=0; k<a_cols; k++){
+  for (int j=0; j<b_cols; ++j){
+    for (int k=0; k<a_cols; ++k){
       int r = b_raw[k][j];
-      for (int i=0; i<a_rows; i++){
+      for (int i=0; i<a_rows; ++i){
         c_raw[i][j] += a_raw[i][k] * r;
       }
     }
@@ -72,26 +81,28 @@ Matrix* MatrixMultiplication::algorithm2(){
   gettimeofday(&endTime, NULL);
   
   timersub(&endTime, &startTime, &elapsedTime);
-  dataMgr->recordTime(2, &elapsedTime);
+  dataMgr->recordTime(1, &elapsedTime);
   return c;
 }
 
-// leverages row major (needs to be zero filled beforehand)
-Matrix* MatrixMultiplication::algorithm3(){
+
+// leverages row major. Very good for C++.
+Matrix* MatrixMultiplication::algorithm2(){
   int a_rows = a->getNumRows();
   int a_cols = a->getNumCols(); // equal to b_rows
   int b_cols = b->getNumCols();
   
+  /* same raw access as algorithm 0 */
   int** a_raw = a->getMatrix();
   int** b_raw = b->getMatrix();
   int** c_raw = c->getMatrix();
   
   struct timeval startTime, endTime, elapsedTime;
   gettimeofday(&startTime, NULL);
-  for (int i=0; i<a_rows; i++){
-    for (int k=0; k<a_cols; k++){
+  for (int i=0; i<a_rows; ++i){
+    for (int k=0; k<a_cols; ++k){
       int r = a_raw[i][k];
-      for (int j=0; j<b_cols; j++){
+      for (int j=0; j<b_cols; ++j){
         c_raw[i][j] += r * b_raw[k][j];
       }
     }
@@ -99,7 +110,7 @@ Matrix* MatrixMultiplication::algorithm3(){
   gettimeofday(&endTime, NULL);
   
   timersub(&endTime, &startTime, &elapsedTime);
-  dataMgr->recordTime(3, &elapsedTime);
+  dataMgr->recordTime(2, &elapsedTime);
   return c;
 }
 
@@ -113,7 +124,8 @@ int main(int argc, char** argv){
   Matrix* b = new Matrix(args->rowsB, args->colsB);
   b->randomize(ULIMIT);
   
-  #ifdef DEBUG
+  #ifdef DISPLAY_A_B
+  std::cout << NEW_SECTION << "\tMatrices A and B\t" << NEW_SECTION;
   std::cout << "Matrix A:\n";
   a->printMatrix();
   std::cout << "Matrix B:\n";
@@ -125,33 +137,48 @@ int main(int argc, char** argv){
   MatrixMultiplication mm = MatrixMultiplication(a, b, dm); 
   Matrix* product;
 
+  /* Get multiple runs of each algorithm for a good average. Randomizing values 
+   * in A/B each time is pointless since we don't actually care about their 
+   * values, just time benchmarks.
+   */
   for(int i=0; i<NUM_ITERS; ++i){
     
+    // algorithm 0
     mm.reinitializeC();
-    product = mm.algorithm1();
-    #ifdef VERBOSE
-    std::cout << "Product using algorithm 1:" << std::endl;
-    product->printMatrix();
+    product = mm.algorithm0();
+    #ifdef DISPLAY_C
+    if (i==0){
+      std::cout << NEW_SECTION << "\tMatrix C\t" << NEW_SECTION;
+      std::cout << "\nProduct using algorithm 0:" << std::endl;
+      product->printMatrix();
+    }
     #endif 
     
+    // algorithm 1
     mm.reinitializeC();
-    product = mm.algorithm2();
-    #ifdef VERBOSE
-    std::cout << "\nProduct using algorithm 2:\n";
-    product->printMatrix();
+    product = mm.algorithm1();
+    #ifdef DISPLAY_C
+    if (i==0){
+      std::cout << "\nProduct using algorithm 1:" << std::endl;
+      product->printMatrix();
+    }
     #endif 
 
+    // algorithm 2
     mm.reinitializeC();
-    product = mm.algorithm3();
-    #ifdef VERBOSE
-    std::cout << "\nProduct using algorithm 3:\n";
-    product->printMatrix();
+    product = mm.algorithm2();
+    #ifdef DISPLAY_C
+    if (i==0){
+      std::cout << "\nProduct using algorithm 2:" << std::endl;
+      product->printMatrix();
+    }
     #endif 
   }
   
   #ifdef AVERAGES
-  std::cout << "Average runtimes (in seconds) over " << NUM_ITERS << " iterations:\n";
-  for (int i=1; i<=3; ++i){
+  std::cout << NEW_SECTION << "\tAVERAGES\t" << NEW_SECTION;
+  std::cout << "Avg runtimes (in sec) over " << NUM_ITERS << " iterations:\n";
+  for (int i=0; i<NUM_ALGORITHMS; ++i){
     double avgRuntimeSeconds = dm->takeAverageOfAlg(i);
     std::cout << "Algorithm " << i << ": " << avgRuntimeSeconds << std::endl;
   }

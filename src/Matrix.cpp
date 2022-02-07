@@ -2,22 +2,22 @@
 
 Matrix::Matrix(int m, int n):rows(m), cols(n){
   matrix = new int*[m];
-  for (int i=0; i<m; i++){
+  for (int i=0; i<m; ++i){
     matrix[i] = new int[n];
   }
 }
 
 
 Matrix::~Matrix(){
-  for (int i=0; i<rows; i++){
+  for (int i=0; i<rows; ++i){
     delete[] matrix[i];
   }
   delete[] matrix;
 }
 
 void Matrix::randomize(int limit){
-  for (int i=0; i<rows; i++){
-    for (int j=0; j<cols; j++){
+  for (int i=0; i<rows; ++i){
+    for (int j=0; j<cols; ++j){
       matrix[i][j] = rand() % limit;
     }
   }
@@ -28,8 +28,8 @@ void Matrix::reinitialize(){
 }
 
 void Matrix::printMatrix(){
-  for (int i=0; i<rows; i++){
-    for (int j=0; j<cols; j++){
+  for (int i=0; i<rows; ++i){
+    for (int j=0; j<cols; ++j){
       std::cout << matrix[i][j] << DELIMETER;
     }
     std::cout << NEWLINE;
