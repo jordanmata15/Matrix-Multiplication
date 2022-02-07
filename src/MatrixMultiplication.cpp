@@ -22,7 +22,7 @@ void MatrixMultiplication::reinitializeC(){
   c->reinitialize();
 }
 
-// leverages column major (needs to be zero filled beforehand)
+// leverages both majors. Best/worst of both. (needs to be zero filled beforehand)
 Matrix* MatrixMultiplication::algorithm1(){
   int a_rows = a->getNumRows();
   int a_cols = a->getNumCols(); // equal to b_rows
@@ -42,18 +42,9 @@ Matrix* MatrixMultiplication::algorithm1(){
     }
   }
   gettimeofday(&endTime, NULL);
-  
+
   timersub(&endTime, &startTime, &elapsedTime);
-  long elapsedSeconds = elapsedTime.tv_sec*(1000000) + (elapsedTime.tv_usec);
-  
-  
-
-  #ifdef DEBUG
-  std::cout << "Time Elapsed (in seconds): " << elapsedSeconds << std::endl;
-  #endif
-
-  //dataMgr->writeTime(1, elapsedSeconds);
-
+  dataMgr->recordTime(1, &elapsedTime);
   return c;
 }
 
@@ -81,15 +72,7 @@ Matrix* MatrixMultiplication::algorithm2(){
   gettimeofday(&endTime, NULL);
   
   timersub(&endTime, &startTime, &elapsedTime);
-  //long elapsedSeconds = elapsedTime.tv_sec + (elapsedTime.tv_usec/1000000);
-  long elapsedSeconds = elapsedTime.tv_sec*(1000000) + (elapsedTime.tv_usec);
-  
-  #ifdef DEBUG
-  std::cout << "Time Elapsed (in seconds): " << elapsedSeconds << std::endl;
-  #endif
-  
-  //dataMgr->writeTime(2, elapsedSeconds);
-
+  dataMgr->recordTime(2, &elapsedTime);
   return c;
 }
 
@@ -116,16 +99,7 @@ Matrix* MatrixMultiplication::algorithm3(){
   gettimeofday(&endTime, NULL);
   
   timersub(&endTime, &startTime, &elapsedTime);
-  //long elapsedSeconds = elapsedTime.tv_sec + (elapsedTime.tv_usec/1000000);
-  long int elapsedSeconds = elapsedTime.tv_sec*(1000000) + (elapsedTime.tv_usec);
-  
-  #ifdef DEBUG
-  std::cout << "Time Elapsed (in seconds): " << elapsedSeconds << std::endl;
-  #endif
-  
-  dataMgr->writeTime(3, elapsedSeconds);
-  std::cout << elapsedSeconds/1000000;
-  
+  dataMgr->recordTime(3, &elapsedTime);
   return c;
 }
 
@@ -148,20 +122,20 @@ int main(int argc, char** argv){
 
   std::vector<std::string> fileNames = {OUT_FILE1, OUT_FILE2, OUT_FILE3};
   DataManager* dm = new DataManager(fileNames);
-  MatrixMultiplication mm = MatrixMultiplication(a, b, dm);
-  
+  MatrixMultiplication mm = MatrixMultiplication(a, b, dm); 
   Matrix* product;
+
   for(int i=0; i<NUM_ITERS; ++i){
     
-    //mm.reinitializeC();
-    //product = mm.algorithm1();
+    mm.reinitializeC();
+    product = mm.algorithm1();
     #ifdef VERBOSE
     std::cout << "Product using algorithm 1:" << std::endl;
     product->printMatrix();
     #endif 
     
-    //mm.reinitializeC();
-    //product = mm.algorithm2();
+    mm.reinitializeC();
+    product = mm.algorithm2();
     #ifdef VERBOSE
     std::cout << "\nProduct using algorithm 2:\n";
     product->printMatrix();
@@ -177,10 +151,8 @@ int main(int argc, char** argv){
   
   #ifdef AVERAGES
   for (int i=1; i<=3; ++i){
-    int avgRuntimeMicro = dm->takeAverageOfAlg(i);
-    double avgRuntimeSec = avgRuntimeMicro/1000000;
-
-    std::cout << "Runtime of algorithm" << i << ": " << avgRuntimeSec << std::endl;
+    double avgRuntimeSeconds = dm->takeAverageOfAlg(i);
+    std::cout << "Runtime of algorithm" << i << ": " << avgRuntimeSeconds << std::endl;
   }
   #endif
 

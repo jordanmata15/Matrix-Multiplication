@@ -4,6 +4,11 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <sys/time.h>
+
+#define OUT_FILE1 "./algorithm1.log"
+#define OUT_FILE2 "./algorithm2.log"
+#define OUT_FILE3 "./algorithm3.log"
 
 class DataManager{
   private:
@@ -11,18 +16,21 @@ class DataManager{
     std::vector<std::string> fileNames;
     std::vector<std::ofstream*> fileOutStreams;
     std::vector<std::ifstream*> fileInStreams;
-    std::vector<std::vector<long int>> times; 
-    void openFiles();
+    std::vector<std::vector<double>> times; 
+    void openOutputFiles();
+    void closeOutputFiles();
     void readSingleAlgTimes(int algNum);
-    long int average(std::vector<long int> intVec);
+    double average(std::vector<double> intVec);
+    double calculateElapsedSeconds(struct timeval* tv_elapsed);
 
   public:
     DataManager(std::vector<std::string> fileNamesIn);
     ~DataManager();
-    void writeTime(int streamNumber, long int time);
+    void writeTimesToFile();
+    void recordTime(int streamNumber, struct timeval* tv_elapsed);
     void readTimes();
     void deleteFiles();
-    long int takeAverageOfAlg(int algNum);
+    double takeAverageOfAlg(int algNum);
 };
 
 #endif // DATA_MANAGER_HPP
