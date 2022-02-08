@@ -23,7 +23,7 @@ make OPTLEVEL=O3
 ```
 will make all files with optimization level 3 (max). Not passing in the flag defaults to not passing in an optimization flag to the compiler.
 
-A file with preset options can be piped to the executable to avoid having to specify dimensions/options. Each line/option must be terminated with a newline ([see provided example](./src/run_config.txt)). Note the newline on the last line.
+A file with preset options can be piped to the executable to avoid having to specify dimensions/options. Each line/option must be terminated with a newline ([example](./src/run_config.txt)). Note the newline on the last line.
 
 ```
 <rows_A>
