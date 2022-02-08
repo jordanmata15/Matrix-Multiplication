@@ -44,4 +44,6 @@ cat <filename> | ./MatrixMultiplication
 ```
 
 ## Notes
-While it is better OOP practice to encapsulate the Matrix object and have setters and getters, we make the int** matrix public so that we can manipulate the raw pointers. This avoids the overhead of having to call something like getXY(x,y) for every access (*n*<sup>3</sup> times). For large *n*, this can be significant overhead.
+While it is better OOP practice to encapsulate the Matrix object and have setters and getters, we make the int** matrix public so that we can manipulate the raw pointers. This avoids the overhead of having to call something like getXY(x,y) for every access (*n*<sup>3</sup> times). For large *n*, this can be significant overhead. Seeing as how this is a benchmarking tool and ONLY a benchmarking tool, it can be overlooked.
+
+It can be sped up even more by representing the 2D array as a single dimension array and using clever math to index the proper row and column.
