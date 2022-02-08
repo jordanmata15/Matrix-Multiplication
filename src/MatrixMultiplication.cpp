@@ -2,12 +2,12 @@
 
 
 MatrixMultiplication::MatrixMultiplication(Matrix* aInput, 
-                                            Matrix* bInput, 
-                                            DataManager* dm){
+                                           Matrix* bInput, 
+                                           std::vector<DataManager>* dm){
   a = aInput;
   b = bInput;
   c = new Matrix(a->getNumRows(), b->getNumCols());
-  dataMgr = dm;
+  dataManagers = dm;
 }
 
 
@@ -50,7 +50,7 @@ Matrix* MatrixMultiplication::algorithm0(){
   gettimeofday(&endTime, NULL);
 
   timersub(&endTime, &startTime, &elapsedTime);
-  dataMgr->recordTime(0, &elapsedTime);
+  dataManagers->at(0).recordTime(&elapsedTime);
   return c;
 }
 
@@ -79,7 +79,7 @@ Matrix* MatrixMultiplication::algorithm1(){
   gettimeofday(&endTime, NULL);
   
   timersub(&endTime, &startTime, &elapsedTime);
-  dataMgr->recordTime(1, &elapsedTime);
+  dataManagers->at(1).recordTime(&elapsedTime);
   return c;
 }
 
@@ -108,7 +108,7 @@ Matrix* MatrixMultiplication::algorithm2(){
   gettimeofday(&endTime, NULL);
   
   timersub(&endTime, &startTime, &elapsedTime);
-  dataMgr->recordTime(2, &elapsedTime);
+  dataManagers->at(2).recordTime(&elapsedTime);
   return c;
 }
 
@@ -117,6 +117,7 @@ int main(int argc, char** argv){
   ArgParser ap = ArgParser();
   Arguments* args = ap.parseArgs();
 
+  // initialize matrices
   Matrix* a = new Matrix(args->rowsA, args->colsA);
   a->randomize(ULIMIT);
   Matrix* b = new Matrix(args->rowsB, args->colsB);
@@ -129,47 +130,35 @@ int main(int argc, char** argv){
     std::cout << "Matrix B:\n";
     b->printMatrix();
   }
+  
+  /* initialized data managers for benchmarking time (one for each algorithm)
+   * files written to are "algorithm#.log" in the calling directory */
+  std::vector<DataManager> dataManagers = std::vector<DataManager>();
+  for (int i=0; i<NUM_ALGORITHMS; ++i){
+    std::string fileName = "./algorithm" + std::to_string(i) + ".log";
+    dataManagers.insert(dataManagers.begin()+i, DataManager(fileName));
+  }
 
-  std::vector<std::string> fileNames = {OUT_FILE1, OUT_FILE2, OUT_FILE3};
-  DataManager* dm = new DataManager(fileNames);
-  MatrixMultiplication mm = MatrixMultiplication(a, b, dm); 
-  Matrix* product;
+  // Object that we can call to do each of the multiplication algorithms for us
+  MatrixMultiplication matrixMult = MatrixMultiplication(a, b, &dataManagers); 
+
 
   std::cout << NEW_SECTION << "\tRunning matrix multiplication\t" << NEW_SECTION;
-
-  /* Get multiple runs of each algorithm for a good average. Randomizing values 
-   * in A/B each time is pointless since we don't actually care about their 
-   * values, just time benchmarks.
-   */
+  /* Get multiple runs of each algorithm for a good average. Reinitializing A/B 
+   * to a new matrix each time is pointless since we don't actually care about 
+   * their values, just time benchmarks. */
   for(int i=0; i<args->numRuns; ++i){
-    
-    // algorithm 0
-    mm.reinitializeC();
-    product = mm.algorithm0();
-    if (args->displayC){
-      if (i==0){
-        std::cout << NEW_SECTION << "\tMatrix C\t" << NEW_SECTION;
-        std::cout << "\nProduct using algorithm 0:" << std::endl;
-        product->printMatrix();
-      }
-    }
-    
-    // algorithm 1
-    mm.reinitializeC();
-    product = mm.algorithm1();
-    if (args->displayC){
-      if (i==0){
-        std::cout << "\nProduct using algorithm 1:" << std::endl;
-        product->printMatrix();
-      }
-    }
+  Matrix* product;
 
-    // algorithm 2
-    mm.reinitializeC();
-    product = mm.algorithm2();
-    if (args->displayC){
-      if (i==0){
-        std::cout << "\nProduct using algorithm 2:" << std::endl;
+    for (int algNum=0; algNum<NUM_ALGORITHMS; ++algNum){ // run all 3 algorithms
+      matrixMult.reinitializeC();
+      if      (algNum==0) product = matrixMult.algorithm0();
+      else if (algNum==1) product = matrixMult.algorithm1();
+      else if (algNum==2) product = matrixMult.algorithm2();
+      // only print C on the first iteration (all others are the same)
+      if (args->displayC && i==0){
+        std::cout << NEW_SECTION << "\tMatrix C\t" << NEW_SECTION;
+        std::cout << "\nProduct using algorithm " << algNum << ": " << std::endl;
         product->printMatrix();
       }
     }
@@ -178,15 +167,15 @@ int main(int argc, char** argv){
   if (args->displayAverages){
     std::cout << NEW_SECTION << "\tAVERAGES\t" << NEW_SECTION;
     std::cout << "Avg runtimes (in sec) over " << args->numRuns << " iterations:\n";
-    for (int i=0; i<NUM_ALGORITHMS; ++i){
-      double avgRuntimeSeconds = dm->takeAverageOfAlg(i);
-      std::cout << "Algorithm " << i << ": " << avgRuntimeSeconds << std::endl;
+    int i=0;
+    for (auto dm:dataManagers){
+      std::cout << "Algorithm " << i << ": " << dm.average() << std::endl;
+      ++i;
     }
   }
 
   delete a;
   delete b;
-  delete dm;
 
   return 0;
 }

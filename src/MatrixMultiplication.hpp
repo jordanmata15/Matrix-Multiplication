@@ -10,11 +10,6 @@
 #define NUM_ALGORITHMS 3
 #define NEW_SECTION "\n*******************************************\n"
 
-#define OUT_FILE1 "./algorithm0.log"
-#define OUT_FILE2 "./algorithm1.log"
-#define OUT_FILE3 "./algorithm2.log"
-
-
 /**
  * Class used to represent the matrix multiplication operation. Stores two 
  * matrices (A,B) and allows calls on different multiplication algorithms
@@ -26,7 +21,8 @@ class MatrixMultiplication{
     Matrix* a;
     Matrix* b;
     Matrix* c;
-    DataManager* dataMgr; // container for times of each algorithm
+    std::vector<DataManager>* dataManagers; // containers to hold the time 
+                                            // benchmarks. 1 for each algorithm
 
   public:
     /**
@@ -35,9 +31,12 @@ class MatrixMultiplication{
      *
      * @param aInput The matrix A to act as the left operand.
      * @param bInput The matrix B to act as teh right operand.
-     * @param dm The data storage for easy recording/manipulation of our times.
+     * @param dm The vector of data storages for easy recording/manipulation of 
+     *           our times.
      */
-    MatrixMultiplication(Matrix* aInput, Matrix* bInput, DataManager* dm);
+    MatrixMultiplication(Matrix* aInput, 
+                          Matrix* bInput, 
+                          std::vector<DataManager>* dm);
 
     /**
      * MAtrixMultiplication Destructor that frees matrix C.
@@ -53,6 +52,9 @@ class MatrixMultiplication{
     /**
      * Algorithm for matrix multiplication using ijk indexing. This uses both
      * column/row accesses. It should be relatively average.
+     * Side effect: Calculates the elapsed time (in seconds) and records it to a
+     *              DataManager associated with this algorithm (once for each 
+     *              time this function is called).
      *
      * @return A matrix C which is the product of the objects fields A and B.
      */
@@ -61,6 +63,9 @@ class MatrixMultiplication{
     /**
      * Algorithm for matrix multiplication using jki indexing. This uses
      * column accesses. It should be relatively slow.
+     * Side effect: Calculates the elapsed time (in seconds) and records it to a
+     *              DataManager associated with this algorithm (once for each 
+     *              time this function is called).
      *
      * @return A matrix C which is the product of the objects fields A and B.
      */
@@ -69,6 +74,9 @@ class MatrixMultiplication{
     /**
      * Algorithm for matrix multiplication using ikj indexing. This uses
      * row accesses. It should be relatively fast.
+     * Side effect: Calculates the elapsed time (in seconds) and records it to a
+     *              DataManager associated with this algorithm (once for each 
+     *              time this function is called).
      *
      * @return A matrix C which is the product of the objects fields A and B.
      */
