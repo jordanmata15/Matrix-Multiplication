@@ -23,7 +23,7 @@ make OPTLEVEL=O3
 ```
 will make all files with optimization level 3 (max). Not passing in the flag defaults to not passing in an optimization flag to the compiler.
 
-A file with preset options can be piped to the executable to avoid having to specify dimensions/options. Each line/option must be terminated with a newline ([example](./src/run_config.txt)). Note the newline on the last line.
+A file with preset options can be piped to the executable to avoid having to specify dimensions/options. Each line/option must be terminated with a newline ([example](./scripting/run_config.txt)). Note the newline on the last line.
 
 ```
 <rows_A>
@@ -37,7 +37,7 @@ A file with preset options can be piped to the executable to avoid having to spe
 
 ```
 
-This file can then be piped to the executable to automate runs ([as in the provided script](src/run_script.sh)).
+This file can then be piped to the executable to automate runs ([as in the provided script](./scripting/run_script.sh)).
 
 ```
 cat <filename> | ./MatrixMultiplication
