@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Where to redirect build messages
-#BUILD_OUTPUT="/dev/null"
-BUILD_OUTPUT=/dev/stdout
+BUILD_OUTPUT="/dev/null"
+#BUILD_OUTPUT=/dev/stdout
 
 SRC_DIR=../src
 
