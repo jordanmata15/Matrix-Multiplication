@@ -1,7 +1,7 @@
 # Serial-Matrix-Multiplication
 
 ## Overview
-A program for multiplying 2 matrices (not necessarily square). Users provide the dimensions, after which, the program randomly fills them with an integer between 0-ULIMIT (ULIMIT is defined in MatrixMultiplication.hpp). After which, the program will perform the multiplication on three algorithms using different indexing for memory accesses. This shows the extra overhead incurred on how data is accessed. Since C++ is a row major language, we should be accessing contiguous rows of data whenever we can as opposed to switching between rows.
+A program for multiplying 2 matrices (not necessarily square). Users provide the dimensions, after which, the program randomly fills them with an integer between 0-ULIMIT (ULIMIT is defined in MatrixMultiplication.hpp). After which, the program will perform the multiplication on three algorithms using different indexing for memory accesses. This shows the extra overhead incurred on how data is accessed. Since C++ is a row major language, we should be accessing contiguous rows of data whenever we can as opposed to switching between columns.
 
 On execution, it prompts the user for dimensions of matrices A and B. Then prompts the user: 
 - Should A/B be printed out (once)?
