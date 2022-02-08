@@ -40,9 +40,11 @@ Matrix* MatrixMultiplication::algorithm0(){
   gettimeofday(&startTime, NULL);
   for (int i=0; i<a_rows; ++i){
     for (int j=0; j<b_cols; ++j){
+      int sum = 0;
       for (int k=0; k<a_cols; ++k){
-        c_raw[i][j] += a_raw[i][k] * b_raw[k][j];
+        sum += a_raw[i][k] * b_raw[k][j];
       }
+      c_raw[i][j] = sum;
     }
   }
   gettimeofday(&endTime, NULL);
