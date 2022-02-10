@@ -2,9 +2,10 @@ PROGRAM=MatrixMultiplication
 OPTLEVEL=
 CXX=g++
 CXXFLAGS=-std=c++11 -g -Wall $(OPTLEVEL)
+OBJS=ArgParser.o DataManager.o Matrix.o $(PROGRAM).o
 
-$(PROGRAM):	$(PROGRAM).o ArgParser.o DataManager.o Matrix.o makefile
-	$(CXX) $(CXXFLAGS) $(PROGRAM).o ArgParser.o Matrix.o DataManager.o -o $(PROGRAM)
+$(PROGRAM):	$(OBJS) makefile
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(PROGRAM)
 
 $(PROGRAM).o: $(PROGRAM).cpp $(PROGRAM).hpp makefile
 
@@ -15,4 +16,4 @@ DataManager.o:	DataManager.cpp DataManager.hpp makefile
 Matrix.o:	Matrix.cpp Matrix.hpp makefile
 
 clean:
-	rm -rf *.o core $(PROGRAM) *.log
+	rm -rf $(OBJS) core $(PROGRAM) *.log
