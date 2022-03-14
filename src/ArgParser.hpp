@@ -2,102 +2,105 @@
 #define ARG_PARSER_HPP
 
 #include <iostream>
-#include <string>
+#include <getopt.h>
 
-#define QUIT "q"
+#define DEFAULT_THREADS 1
+#define DEFAULT_ALG_NUM 1
 #define INVALID -1
-#define NUM_ITERS 3 // runs for our average
+#define USAGE "\nusage: ./MonteCarloApproximation -M rowsA -N colsA/colsB -P colsB <optional_flags>\n"\
+              "\tMandatory flags with arguments:\n"\
+              "\t\t-M reads in rowsA\t\t(rowsA \t\t> 0, integer)\n"\
+              "\t\t-N reads in colsA/colsB\t\t(colsA, colsB \t> 0, integer)\n"\
+              "\t\t-P reads in colsB\t\t(colsB \t\t> 0, integer)\n"\
+              "\tOptional flags with arguments:\n"\
+              "\t\t-n reads in NUM_THREADS\t\t(NUM_THREADS \t> 0, integer)\n"\
+              "\t\t-p reads in ALG_NUM\t(ALG_NUM either 0, 1, or 2)\n"\
+              "\tOptional flags without arguments:\n"\
+              "\t\t-a enables displaying matrices A/B one time each.\n"\
+              "\t\t-c enables displaying matrix C one time for each algorithm.\n"
 
 /**
- * Arguments object to hold the values of the desired inputs given by the user.
+ * @brief Arguments object to hold the values of the desired inputs given by the user.
  */
 class Arguments{
   public:
+    int algNum;
+    int numThreads;
     int rowsA;
     int colsA;
     int rowsB;
     int colsB;
     bool displayAB;
     bool displayC;
-    bool displayAverages;
-    int numRuns;
-
+    
     /**
      * Basic constructor. sets default values.
      */
-    Arguments():rowsA(INVALID), 
+    Arguments():algNum(DEFAULT_ALG_NUM),
+                numThreads(DEFAULT_THREADS),
+                rowsA(INVALID), 
                 colsA(INVALID), 
                 rowsB(INVALID), 
                 colsB(INVALID),
                 displayAB(false), 
-                displayC(false), 
-                displayAverages(true), 
-                numRuns(NUM_ITERS){}
+                displayC(false){}
 };
 
 
 /**
- * Class to continuously prompt the user for input and validate it. Fills an 
- * Arguments object with the users desired input.
+ * @brief Class to read in command line arguments and validate them. Fills an Arguments 
+ *        object with the users desired input.
  */
 class ArgParser {
 
   private:
     /**
-     * Validates an individual argument.
-     *
-     * @param value The value that is held by the argument. 
-     * @return true if the program can accept this input, false otherwise.
+     * @brief Reads in an string and returns the converted integer.
+     * 
+     * @param value String value to convert to an integer. 
+     * @return int The converted integer. Returns -1 if the string was not successfully converted.
      */
-    bool validArgument(int value);
+    int readInt(char flag, char* value);
 
     /**
-     * Prompts the user for input to populate the Arguments object.
-     *
-     * @param ptrToSet A pointer to the object we want the user to give a value
-     *        for. Whatever integer input user the user enters will be stored in
-     *        this variable.
-     */
-    void promptNumeric(int* ptrToSet);
-   
-    /**
-     * Prompts the user for a y/n input and sets the stored variable to that 
-     * value.
+     * @brief Prints out the usage of our program.
      * 
-     * @param ptrToSet A pointer to the object we want the user to give a value
-     *        for. If users input 'y', it will save true, 'q' exits the program,
-     *        anything else defaults to false.
      */
-    void promptYN(bool* ptrToSet);
-    
+    void printUsage(){ std::cout << USAGE << std::endl; }
+
     /**
-     * Calls prompts for all optional values. Optional in the sense that they
-     * have valid default values.
+     * @brief Validates whether our inputs are valid and we can populate the matrices.
+     * 
+     * @return true if the populated arguments are valid.
+     * @return false otherwise.
      */
-    void promptOptional();
+    bool validArgs();
   
   public:
     Arguments* args;
 
     /**
-     * Simple constructor that dynamically allocates memory for the arguments.
+     * @brief Construct a new Arg Parser object. Dynamically allocate the memory.
+     * 
      */
     ArgParser() { args = new Arguments(); }
 
     /**
-     * Simple destructor that frees the arguments once we're done with them.
+     * @brief Destroy the Arg Parser object and free the allocated memory.
+     * 
      */
     ~ArgParser(){ delete args; }
 
     /**
-     * Method used to verify all arguments are valid. For any invalid, it will
-     * call prompt() to have the user try to populate them. If any arguments are
-     * incorrect, ALL inputs are reset and the user is reprompted.
-     *
-     * @return A pointer to an argument structure from which the user inputs
+     * @brief Method used to parse the flags from the user. Validates integer arguments
+     * and exits if invalid.
+     * 
+     * @param argc The argument count provided to main().
+     * @param argv The argument list provided to main().
+     * @return Arguments* A pointer to an argument structure from which the user inputs
      *         can be read.
      */
-    Arguments* parseArgs();
+    Arguments* parseArgs(int argc, char** argv);
 };
 
 #endif // ARG_PARSER_HPP
