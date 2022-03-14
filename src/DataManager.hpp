@@ -29,6 +29,11 @@ class DataManager{
   public:
     /**
      * Simple constructor.
+     */
+    DataManager();
+
+    /**
+     * Simple constructor.
      *
      * @param fileNameIn The name of the file to which we will read/write times
      *                   to. We may also delete the file entirely.

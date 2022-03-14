@@ -1,5 +1,9 @@
 #include "DataManager.hpp"
 
+// simple constructor
+DataManager::DataManager(){
+  times = std::vector<double>();
+}
 
 // simple constructor
 DataManager::DataManager(std::string fileNameIn){

@@ -15,6 +15,7 @@ Matrix::~Matrix(){
   delete[] matrix;
 }
 
+
 void Matrix::randomize(int limit){
   srand(time(NULL));
   for (int i=0; i<rows; ++i){
@@ -24,9 +25,11 @@ void Matrix::randomize(int limit){
   }
 }
 
+
 void Matrix::reinitialize(){
   randomize(1);
 }
+
 
 void Matrix::printMatrix(){
   for (int i=0; i<rows; ++i){

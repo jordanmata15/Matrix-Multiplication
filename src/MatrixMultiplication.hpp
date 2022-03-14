@@ -21,7 +21,7 @@ class MatrixMultiplication{
     Matrix* a;
     Matrix* b;
     Matrix* c;
-    std::vector<DataManager>* dataManagers; // containers to hold the time 
+    DataManager* dataManagers; // containers to hold the time 
                                             // benchmarks. 1 for each algorithm
 
   public:
@@ -31,15 +31,14 @@ class MatrixMultiplication{
      *
      * @param aInput The matrix A to act as the left operand.
      * @param bInput The matrix B to act as teh right operand.
-     * @param dm The vector of data storages for easy recording/manipulation of 
-     *           our times.
+     * @param dm Data storage for easy recording/manipulation of our times.
      */
     MatrixMultiplication(Matrix* aInput, 
                           Matrix* bInput, 
-                          std::vector<DataManager>* dm);
+                          DataManager* dm);
 
     /**
-     * MAtrixMultiplication Destructor that frees matrix C.
+     * MatrixMultiplication Destructor that frees matrix C.
      */
     ~MatrixMultiplication();
     
