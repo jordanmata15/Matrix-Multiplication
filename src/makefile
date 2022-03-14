@@ -1,21 +1,23 @@
-PROGRAM=main
 OPTLEVEL=
+PROGRAM=MatrixMultiplication
 CXX=g++
 CXXFLAGS=-std=c++11 -g -Wall $(OPTLEVEL)
-OBJS=ArgParser.o DataManager.o Matrix.o MatrixMultiplication.o $(PROGRAM).o
+LDLIBS=-fopenmp
 
-$(PROGRAM):	$(OBJS) makefile
-	$(CXX) $(CXXFLAGS) $(OBJS) -o $(PROGRAM)
+# keep our cpp/hpp files separate from .o and executable
+SRCDIR=.
+BUILD=../build
 
-$(PROGRAM).o: $(PROGRAM).cpp $(PROGRAM).hpp
+# https://stackoverflow.com/questions/48267813/makefile-compile-objects-to-different-directory-and-build-from-there
+SRC:=$(shell find $(SRCDIR)/ -name "*.cpp")
+OBJS:=$(SRC:%.cpp=$(BUILD)/%.o)
 
-MatrixMultiplication.o:	MatrixMultiplication.cpp MatrixMultiplication.hpp
 
-ArgParser.o:	ArgParser.cpp ArgParser.hpp
+$(BUILD)/$(PROGRAM):	$(OBJS)
+	$(CXX) $(CXXFLAGS) $(BUILD)/$(OBJS) -o $(BUILD)/$(PROGRAM) ${LDLIBS}
 
-DataManager.o:	DataManager.cpp DataManager.hpp
-
-Matrix.o:	Matrix.cpp Matrix.hpp
+$(BUILD)/%.o: $(SRCDIR)/%.cpp $(SRCDIR)/%.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $< ${LDLIBS}
 
 clean:
-	rm -rf $(OBJS) core* $(PROGRAM) *.log
+	rm -rf $(BUILD)/core* $(OBJS) $(BUILD)/$(PROGRAM)

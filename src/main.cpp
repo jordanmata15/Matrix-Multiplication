@@ -25,9 +25,9 @@ int main(int argc, char** argv){
   MatrixMultiplication matrixMult = MatrixMultiplication(a, b, &dataManager); 
 
   Matrix* product;
-  if        (args->algNum==0) product = matrixMult.algorithm0();
-  else if   (args->algNum==1) product = matrixMult.algorithm1();
-  else if   (args->algNum==2) product = matrixMult.algorithm2();
+  if      (args->algNum==0) product = matrixMult.algorithm0();
+  else if (args->algNum==1) product = matrixMult.algorithm1();
+  else                      product = matrixMult.algorithm2();
 
   if (args->displayC) product->printMatrix();
   
