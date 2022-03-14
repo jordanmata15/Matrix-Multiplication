@@ -35,7 +35,7 @@ Arguments* ArgParser::parseArgs(int argc, char** argv){
 
       case 'p':
         args->algNum = this->readInt(option, optarg);
-        if (args->algNum <= 0){
+        if (args->algNum < 0 || args->algNum > NUM_ALGORITHMS){
           fprintf(stderr,"Flag -%c expects an integer input greater than 0. Found: '%s'\n", option, optarg);
           printUsage();
           exit(1);

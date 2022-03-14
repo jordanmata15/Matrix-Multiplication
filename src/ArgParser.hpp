@@ -5,7 +5,8 @@
 #include <getopt.h>
 
 #define DEFAULT_THREADS 1
-#define DEFAULT_ALG_NUM 1
+#define DEFAULT_ALG_NUM 2
+#define NUM_ALGORITHMS 3
 #define INVALID -1
 #define USAGE "\nusage: ./MonteCarloApproximation -M rowsA -N colsA/colsB -P colsB <optional_flags>\n"\
               "\tMandatory flags with arguments:\n"\
