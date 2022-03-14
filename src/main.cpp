@@ -1,4 +1,4 @@
-  #include "main.hpp"
+#include "main.hpp"
 
 int main(int argc, char** argv){
   ArgParser ap = ArgParser();
@@ -21,16 +21,17 @@ int main(int argc, char** argv){
   // Data manager for benchmarking time
   DataManager dataManager = DataManager();
 
-  // Object that we can call to do each of the multiplication algorithms for us
-  MatrixMultiplication matrixMult = MatrixMultiplication(a, b, &dataManager); 
 
+  // Object that we can call to do each of the multiplication algorithms for us
+  MatrixMultiplication matrixMult = MatrixMultiplication(a, b, &dataManager, args->numThreads); 
+  
   Matrix* product;
   if      (args->algNum==0) product = matrixMult.algorithm0();
   else if (args->algNum==1) product = matrixMult.algorithm1();
   else                      product = matrixMult.algorithm2();
 
   if (args->displayC) product->printMatrix();
-  
+
   std::cout << std::fixed << std::setprecision(10) << dataManager.average() << std::endl;
 
   delete a;

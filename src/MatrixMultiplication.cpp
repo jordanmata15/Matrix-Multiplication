@@ -3,11 +3,13 @@
 
 MatrixMultiplication::MatrixMultiplication(Matrix* aInput, 
                                            Matrix* bInput, 
-                                           DataManager* dm){
+                                           DataManager* dm,
+                                           int numThreads){
   a = aInput;
   b = bInput;
   c = new Matrix(a->getNumRows(), b->getNumCols());
   dataManagers = dm;
+  this->numThreads = numThreads;
 }
 
 
@@ -38,6 +40,8 @@ Matrix* MatrixMultiplication::algorithm0(){
   
   struct timeval startTime, endTime, elapsedTime;
   gettimeofday(&startTime, NULL);
+
+  #pragma omp parallel for num_threads(this->numThreads)
   for (int i=0; i<a_rows; ++i){
     for (int j=0; j<b_cols; ++j){
       int sum = 0;
@@ -47,8 +51,8 @@ Matrix* MatrixMultiplication::algorithm0(){
       c_raw[i][j] = sum;
     }
   }
+  
   gettimeofday(&endTime, NULL);
-
   timersub(&endTime, &startTime, &elapsedTime);
   dataManagers->recordTime(&elapsedTime);
   return c;
@@ -68,6 +72,8 @@ Matrix* MatrixMultiplication::algorithm1(){
   
   struct timeval startTime, endTime, elapsedTime;
   gettimeofday(&startTime, NULL);
+
+  #pragma omp parallel for num_threads(this->numThreads)
   for (int j=0; j<b_cols; ++j){
     for (int k=0; k<a_cols; ++k){
       int r = b_raw[k][j];
@@ -76,8 +82,8 @@ Matrix* MatrixMultiplication::algorithm1(){
       }
     }
   }
+
   gettimeofday(&endTime, NULL);
-  
   timersub(&endTime, &startTime, &elapsedTime);
   dataManagers->recordTime(&elapsedTime);
   return c;
@@ -97,6 +103,8 @@ Matrix* MatrixMultiplication::algorithm2(){
   
   struct timeval startTime, endTime, elapsedTime;
   gettimeofday(&startTime, NULL);
+
+  #pragma omp parallel for num_threads(this->numThreads)
   for (int i=0; i<a_rows; ++i){
     for (int k=0; k<a_cols; ++k){
       int r = a_raw[i][k];
@@ -105,8 +113,8 @@ Matrix* MatrixMultiplication::algorithm2(){
       }
     }
   }
+
   gettimeofday(&endTime, NULL);
-  
   timersub(&endTime, &startTime, &elapsedTime);
   dataManagers->recordTime(&elapsedTime);
   return c;

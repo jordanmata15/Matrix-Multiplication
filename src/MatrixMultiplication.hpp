@@ -21,8 +21,8 @@ class MatrixMultiplication{
     Matrix* a;
     Matrix* b;
     Matrix* c;
-    DataManager* dataManagers; // containers to hold the time 
-                                            // benchmarks. 1 for each algorithm
+    DataManager* dataManagers; // containers to hold the time benchmarks.
+    int numThreads;
 
   public:
     /**
@@ -35,7 +35,8 @@ class MatrixMultiplication{
      */
     MatrixMultiplication(Matrix* aInput, 
                           Matrix* bInput, 
-                          DataManager* dm);
+                          DataManager* dm,
+                          int numThreads);
 
     /**
      * MatrixMultiplication Destructor that frees matrix C.

@@ -4,4 +4,4 @@
 #include <iomanip>
 #include "MatrixMultiplication.hpp"
 
-#endif
+#endif // __MAIN_HPP__
