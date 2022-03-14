@@ -12,7 +12,7 @@ data_filename = os.path.join(data_path, "times.csv")
 
 
 def crunch_data(filename):
-    # num_threads, num_random_points, pi_approximation, time_elapsed
+    # num_threads, square_sizes, time_elapsed
     df = pd.read_csv(filename)
     
     # create our plots
