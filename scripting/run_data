@@ -29,7 +29,7 @@ do
     MATRIX_SIZE=(1 10 100 500 1000 3000)
     for size in ${MATRIX_SIZE[@]}
     do
-        TIME_OUTPUT=$($BUILD_DIR/$EXE -M $size -N $size -P $size -n $thread_num -p 1)
+        TIME_OUTPUT=$($BUILD_DIR/$EXE -M $size -N $size -P $size -n $thread_num)
         echo "$thread_num,$size,$TIME_OUTPUT" >>  $DATA_FILES/times.csv
     done
 done
