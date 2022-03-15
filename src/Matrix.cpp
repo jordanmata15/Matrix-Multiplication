@@ -1,9 +1,9 @@
 #include "Matrix.hpp"
 
 Matrix::Matrix(int m, int n):rows(m), cols(n){
-  matrix = new int*[m];
+  matrix = new double*[m];
   for (int i=0; i<m; ++i){
-    matrix[i] = new int[n];
+    matrix[i] = new double[n];
   }
 }
 
@@ -20,7 +20,7 @@ void Matrix::randomize(int limit){
   srand(time(NULL));
   for (int i=0; i<rows; ++i){
     for (int j=0; j<cols; ++j){
-      matrix[i][j] = rand() % limit;
+      matrix[i][j] = limit * ((double)rand() / (double)limit);
     }
   }
 }
@@ -41,7 +41,7 @@ void Matrix::printMatrix(){
 }
 
 
-int** Matrix::getMatrix(){
+double** Matrix::getMatrix(){
   return this->matrix;
 }
 

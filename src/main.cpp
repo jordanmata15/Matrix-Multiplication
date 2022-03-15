@@ -21,7 +21,6 @@ int main(int argc, char** argv){
   // Data manager for benchmarking time
   DataManager dataManager = DataManager();
 
-
   // Object that we can call to do each of the multiplication algorithms for us
   MatrixMultiplication matrixMult = MatrixMultiplication(a, b, &dataManager, args->numThreads); 
   
@@ -30,7 +29,11 @@ int main(int argc, char** argv){
   else if (args->algNum==1) product = matrixMult.algorithm1();
   else                      product = matrixMult.algorithm2();
 
-  if (args->displayC) product->printMatrix();
+  if (args->displayC){
+    std::cout << NEW_SECTION << "\tMatrix C\t" << NEW_SECTION;
+    std::cout << "Matrix C:\n";
+    product->printMatrix();
+  }
 
   std::cout << std::fixed << std::setprecision(10) << dataManager.average() << std::endl;
 

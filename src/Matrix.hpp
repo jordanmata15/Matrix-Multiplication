@@ -14,14 +14,15 @@ class Matrix{
   private:
     int rows;
     int cols;
-    int** matrix;
+    double** matrix;
 
   public:
     /**
      * Dynamically allocates memory for our 2D matrix to allow for very large
      * matrices that would otherwise not fit on the stack.
      *
-     * @param var val
+     * @param m Number of rows
+     * @param n Number of columns
      */
     Matrix(int m, int n);
     
@@ -60,7 +61,7 @@ class Matrix{
      *
      * @return the raw 2D matrix.
      */
-    int** getMatrix();
+    double** getMatrix();
     
     /**
      * Prints the values of the matrix with each item being delimited by

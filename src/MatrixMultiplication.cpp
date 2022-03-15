@@ -34,9 +34,9 @@ Matrix* MatrixMultiplication::algorithm0(){
    * perspective, but direct access to the raw array memory is faster as it 
    * avoids the overhead of a function call for EACH access.
    */
-  int** a_raw = a->getMatrix();
-  int** b_raw = b->getMatrix();
-  int** c_raw = c->getMatrix();
+  double** a_raw = a->getMatrix();
+  double** b_raw = b->getMatrix();
+  double** c_raw = c->getMatrix();
   
   struct timeval startTime, endTime, elapsedTime;
   gettimeofday(&startTime, NULL);
@@ -44,7 +44,7 @@ Matrix* MatrixMultiplication::algorithm0(){
   #pragma omp parallel for num_threads(this->numThreads)
   for (int i=0; i<a_rows; ++i){
     for (int j=0; j<b_cols; ++j){
-      int sum = 0;
+      double sum = 0;
       for (int k=0; k<a_cols; ++k){
         sum += a_raw[i][k] * b_raw[k][j];
       }
@@ -66,9 +66,9 @@ Matrix* MatrixMultiplication::algorithm1(){
   int b_cols = b->getNumCols();
 
   /* same raw access as algorithm 0 */
-  int** a_raw = a->getMatrix();
-  int** b_raw = b->getMatrix();
-  int** c_raw = c->getMatrix();
+  double** a_raw = a->getMatrix();
+  double** b_raw = b->getMatrix();
+  double** c_raw = c->getMatrix();
   
   struct timeval startTime, endTime, elapsedTime;
   gettimeofday(&startTime, NULL);
@@ -76,7 +76,7 @@ Matrix* MatrixMultiplication::algorithm1(){
   #pragma omp parallel for num_threads(this->numThreads)
   for (int j=0; j<b_cols; ++j){
     for (int k=0; k<a_cols; ++k){
-      int r = b_raw[k][j];
+      double r = b_raw[k][j];
       for (int i=0; i<a_rows; ++i){
         c_raw[i][j] += a_raw[i][k] * r;
       }
@@ -97,9 +97,9 @@ Matrix* MatrixMultiplication::algorithm2(){
   int b_cols = b->getNumCols();
   
   /* same raw access as algorithm 0 */
-  int** a_raw = a->getMatrix();
-  int** b_raw = b->getMatrix();
-  int** c_raw = c->getMatrix();
+  double** a_raw = a->getMatrix();
+  double** b_raw = b->getMatrix();
+  double** c_raw = c->getMatrix();
   
   struct timeval startTime, endTime, elapsedTime;
   gettimeofday(&startTime, NULL);
@@ -107,7 +107,7 @@ Matrix* MatrixMultiplication::algorithm2(){
   #pragma omp parallel for num_threads(this->numThreads)
   for (int i=0; i<a_rows; ++i){
     for (int k=0; k<a_cols; ++k){
-      int r = a_raw[i][k];
+      double r = a_raw[i][k];
       for (int j=0; j<b_cols; ++j){
         c_raw[i][j] += r * b_raw[k][j];
       }
