@@ -3,12 +3,6 @@
 ## Overview
 A program for multiplying 2 matrices (not necessarily square). Users provide the dimensions, after which, the program randomly fills them with an integer between 0-ULIMIT (ULIMIT is defined in MatrixMultiplication.hpp). After which, the program will perform the multiplication on three algorithms using different indexing for memory accesses. This shows the extra overhead incurred on how data is accessed. Since C++ is a row major language, we should be accessing contiguous rows of data whenever we can as opposed to switching between columns.
 
-On execution, it prompts the user for dimensions of matrices A and B. Then prompts the user: 
-- Should A/B be printed out (once)?
-- Should C should be printed out (once)? 
-- Should the averages of each algorithm should be printed out? 
-- How many runs of each iteration should occur for the averages?
-
 ## The algorithms
 - Algorithm 0: Uses *ijk* indexing. This uses contiguous row and column accesses. Because it uses both, it's not the worst.
 - Algorithm 1: Uses *jki* indexing. This uses contiguous column accesses only. Each read is in a different row, so it has more overhead and is very slow. 
@@ -23,25 +17,21 @@ make OPTLEVEL=O3
 ```
 will make all files with optimization level 3 (max). Not passing in the flag defaults to not passing in an optimization flag to the compiler.
 
-A file with preset options can be piped to the executable to avoid having to specify dimensions/options. Each line/option must be terminated with a newline ([example](./scripting/run_config.txt)). Note the newline on the last line.
+## Usage
 
-```
-<rows_A>
-<cols_A>
-<rows_B>
-<cols_B>
-<display_AB>
-<display_C>
-<take_averages>
-<iters_per_algorithm_avg>
+Mandatory flags with arguments:
+  -M reads in rowsA         (rowsA          > 0, integer)
+  -N reads in colsA/colsB   (colsA, colsB   > 0, integer)
+  -P reads in colsB         (colsB          > 0, integer)
+Optional flags with arguments:
+  -n reads in NUM_THREADS   (NUM_THREADS    > 0, integer)
+  -p reads in ALG_NUM       (ALG_NUM either 0, 1, or 2)
+Optional flags without arguments:
+  -a enables displaying matrices A/B one time each.
+  -c enables displaying matrix C one time for each algorithm.
 
-```
-
-This file can then be piped to the executable to automate runs ([as in the provided script](./scripting/run_script.sh)).
-
-```
-cat <filename> | ./MatrixMultiplication
-```
+eg. The following runs matrix multiplication on matrix A (300x100) and matrix B (100, 200)
+./IntegralApproximation -M 300 -N 100 -P 200
 
 ## Notes
 While it is better OOP practice to encapsulate the Matrix object and have setters and getters, we make the int** matrix public so that we can manipulate the raw pointers. This avoids the overhead of having to call something like getXY(x,y) for every access (*n*<sup>3</sup> times). For large *n*, this can be significant overhead. Seeing as how this is a benchmarking tool and ONLY a benchmarking tool, it can be overlooked.
