@@ -5,24 +5,31 @@ import math
 import os
 import sys
 
-path_to_script = os.path.dirname(__file__)
+# global setting for applying grids to all plots
+plt.rcParams['axes.grid'] = True
 
+path_to_script = os.path.dirname(__file__)
 data_path = os.path.join(path_to_script, "../data") # data folder relative to this script
 data_filename = os.path.join(data_path, "times.csv")
 
 
 def crunch_data(filename):
-    # num_threads, square_sizes, time_elapsed
+    """Plots our graphs.
+
+    :param filename: The times.csv file with the following columns:
+                        num_threads, square_sizes, time_elapsed 
+    """
     df = pd.read_csv(filename)
     
-    # create our plots
     plot_threads_to_time(df[['num_threads','square_sizes', 'time_elapsed']])
 
 
-"""
-Plot number of threads to the time elapsed. One line for each data size. 
-"""
 def plot_threads_to_time(times_df):
+    """Plot number of threads to the time elapsed.
+    
+    :param times_df: A pandas dataframe with columns 
+                        ['num_threads','square_sizes', 'time_elapsed']
+    """
     sizes = times_df["square_sizes"].unique()
 
     # format the plot
@@ -44,6 +51,10 @@ def plot_threads_to_time(times_df):
 
 
 if __name__=="__main__":
+    """Runs the plots for our dataset.
+
+    :param argv[1]: The name of the csv file to read from (in the data/ folder).
+    """
     if len(sys.argv) > 1:
         data_filename = sys.argv[1]
 
