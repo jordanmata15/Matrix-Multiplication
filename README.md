@@ -31,7 +31,9 @@ Optional flags without arguments:</br>
   &emsp;-c enables displaying matrix C one time for each algorithm.</br>
 
 eg. The following runs matrix multiplication on matrix A (300x100) and matrix B (100, 200)
+```
 ./IntegralApproximation -M 300 -N 100 -P 200
+```
 
 ## Notes
 While it is better OOP practice to encapsulate the Matrix object and have setters and getters, we make the int** matrix public so that we can manipulate the raw pointers. This avoids the overhead of having to call something like getXY(x,y) for every access (*n*<sup>3</sup> times). For large *n*, this can be significant overhead. Seeing as how this is a benchmarking tool and ONLY a benchmarking tool, it can be overlooked.
