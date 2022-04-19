@@ -19,16 +19,16 @@ will make all files with optimization level 3 (max). Not passing in the flag def
 
 ## Usage
 
-Mandatory flags with arguments:
-  -M reads in rowsA         (rowsA          > 0, integer)
-  -N reads in colsA/colsB   (colsA, colsB   > 0, integer)
-  -P reads in colsB         (colsB          > 0, integer)
-Optional flags with arguments:
-  -n reads in NUM_THREADS   (NUM_THREADS    > 0, integer)
-  -p reads in ALG_NUM       (ALG_NUM either 0, 1, or 2)
-Optional flags without arguments:
-  -a enables displaying matrices A/B one time each.
-  -c enables displaying matrix C one time for each algorithm.
+Mandatory flags with arguments:</br>
+  &emsp;-M reads in rowsA         (rowsA          > 0, integer)</br>
+  &emsp;-N reads in colsA/colsB   (colsA, colsB   > 0, integer)</br>
+  &emsp;-P reads in colsB         (colsB          > 0, integer)</br>
+Optional flags with arguments:</br>
+  &emsp;-n reads in NUM_THREADS   (NUM_THREADS    > 0, integer)</br>
+  &emsp;-p reads in ALG_NUM       (ALG_NUM either 0, 1, or 2)</br>
+Optional flags without arguments:</br>
+  &emsp;-a enables displaying matrices A/B one time each.</br>
+  &emsp;-c enables displaying matrix C one time for each algorithm.</br>
 
 eg. The following runs matrix multiplication on matrix A (300x100) and matrix B (100, 200)
 ./IntegralApproximation -M 300 -N 100 -P 200
