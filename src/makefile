@@ -12,12 +12,16 @@ BUILD=../build
 SRC:=$(shell find $(SRCDIR)/ -name "*.cpp")
 OBJS:=$(SRC:%.cpp=$(BUILD)/%.o)
 
+all: $(OBJS) $(BUILD)/$(PROGRAM)
 
-$(BUILD)/$(PROGRAM):	$(OBJS)
+$(BUILD)/$(PROGRAM): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(BUILD)/$(OBJS) -o $(BUILD)/$(PROGRAM) ${LDLIBS}
 
 $(BUILD)/%.o: $(SRCDIR)/%.cpp $(SRCDIR)/%.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $< ${LDLIBS}
+
+run: all
+	$(BUILD)/$(PROGRAM) -M 100 -N 1000 -P 10
 
 clean:
 	rm -rf $(BUILD)/core* $(OBJS) $(BUILD)/$(PROGRAM)

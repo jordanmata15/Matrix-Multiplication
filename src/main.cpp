@@ -25,9 +25,7 @@ int main(int argc, char** argv){
   MatrixMultiplication matrixMult = MatrixMultiplication(a, b, &dataManager, args->numThreads); 
   
   Matrix* product;
-  if      (args->algNum==0) product = matrixMult.algorithm0();
-  else if (args->algNum==1) product = matrixMult.algorithm1();
-  else                      product = matrixMult.algorithm2();
+  product = matrixMult.multiply();
 
   if (args->displayC){
     std::cout << NEW_SECTION << "\tMatrix C\t" << NEW_SECTION;
@@ -35,7 +33,7 @@ int main(int argc, char** argv){
     product->printMatrix();
   }
 
-  std::cout << std::fixed << std::setprecision(10) << dataManager.average() << std::endl;
+  std::cout << std::fixed << std::setprecision(10) << dataManager.getTimeElapsed() << std::endl;
 
   delete a;
   delete b;

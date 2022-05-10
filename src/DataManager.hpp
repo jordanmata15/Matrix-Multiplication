@@ -12,19 +12,7 @@
 class DataManager{
   
   private:
-    std::string fileName;
-    std::ofstream* fileOutStream;
-    std::vector<double> times;
-    
-    /**
-     * Given a time struct, returns the value in seconds (with fractional 
-     * values of seconds).
-     *
-     * @param tvElapsed The time value struct holding the elapsed time.
-     * @return The decimal representation of how many seconds are held in 
-     *         tvElapsed
-     */
-    double calculateElapsedSeconds(struct timeval* tvElapsed);
+    struct timeval startTime, endTime, elapsedTime;
 
   public:
     /**
@@ -40,36 +28,11 @@ class DataManager{
      */
     DataManager(std::string fileNameIn);
     
+    void startTimer();
 
-    /**
-     * Writes all recorded elapsed times (in seconds) of this algorithm.
-     */
-    void writeTimesToFile();
-   
+    void stopTimer();
 
-    /**
-     * Records the time for this algorithm (in seconds) to a vector.
-     *
-     * @param tvElapsed The struct holding the delta time taken for the 
-     *        algorithm.
-     */
-    void recordTime(struct timeval* tvElapsed);
-    
-
-    /**
-     * Reads times from a file and populates the vector of times. Reads from the
-     * filename passed in to the constructor.
-     */
-    void readTimes();
-    
-    
-    /**
-     * Averages the values of the recorded times (in seconds).
-     *
-     * @return The average of all the times taken by the algorithm represented
-     *         by this DataManager.
-     */
-    double average();
+    double getTimeElapsed();
     
 };
 

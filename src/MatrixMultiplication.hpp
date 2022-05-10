@@ -21,7 +21,7 @@ class MatrixMultiplication{
     Matrix* a;
     Matrix* b;
     Matrix* c;
-    DataManager* dataManagers; // containers to hold the time benchmarks.
+    DataManager* dataManager; // containers to hold the time benchmarks.
     int numThreads;
 
   public:
@@ -48,28 +48,6 @@ class MatrixMultiplication{
      * 0-filled.
      */
     void reinitializeC();
-
-    /**
-     * Algorithm for matrix multiplication using ijk indexing. This uses both
-     * column/row accesses. It should be relatively average.
-     * Side effect: Calculates the elapsed time (in seconds) and records it to a
-     *              DataManager associated with this algorithm (once for each 
-     *              time this function is called).
-     *
-     * @return A matrix C which is the product of the objects fields A and B.
-     */
-    Matrix* algorithm0();
-    
-    /**
-     * Algorithm for matrix multiplication using jki indexing. This uses
-     * column accesses. It should be relatively slow.
-     * Side effect: Calculates the elapsed time (in seconds) and records it to a
-     *              DataManager associated with this algorithm (once for each 
-     *              time this function is called).
-     *
-     * @return A matrix C which is the product of the objects fields A and B.
-     */
-    Matrix* algorithm1();
     
     /**
      * Algorithm for matrix multiplication using ikj indexing. This uses
@@ -80,7 +58,7 @@ class MatrixMultiplication{
      *
      * @return A matrix C which is the product of the objects fields A and B.
      */
-    Matrix* algorithm2();
+    Matrix* multiply();
 };
 
 #endif // MATRIX_MULTIPLICATION_HPP
