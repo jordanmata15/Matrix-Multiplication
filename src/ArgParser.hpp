@@ -1,12 +1,13 @@
 #ifndef ARG_PARSER_HPP
 #define ARG_PARSER_HPP
 
+
 #include <iostream>
 #include <getopt.h>
+#include <math.h>
 
 #define DEFAULT_THREADS 1
-#define DEFAULT_ALG_NUM 2
-#define NUM_ALGORITHMS 3
+#define DEFAULT_TILES 1
 #define INVALID -1
 #define USAGE "\nusage: ./MonteCarloApproximation -M rowsA -N colsA/colsB -P colsB <optional_flags>\n"\
               "\tMandatory flags with arguments:\n"\
@@ -25,8 +26,8 @@
  */
 class Arguments{
   public:
-    int algNum;
     int numThreads;
+    int numTiles;
     int rowsA;
     int colsA;
     int rowsB;
@@ -37,8 +38,8 @@ class Arguments{
     /**
      * Basic constructor. sets default values.
      */
-    Arguments():algNum(DEFAULT_ALG_NUM),
-                numThreads(DEFAULT_THREADS),
+    Arguments():numThreads(DEFAULT_THREADS),
+                numTiles(DEFAULT_TILES),
                 rowsA(INVALID), 
                 colsA(INVALID), 
                 rowsB(INVALID), 

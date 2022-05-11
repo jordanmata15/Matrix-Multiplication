@@ -27,6 +27,9 @@ class Matrix {
      */
     Matrix(int m, int n);
 
+
+    Matrix(Matrix &matrixToCopy);
+
     /**
      * Releases the memory from our dynamic allocation.
      */
@@ -35,20 +38,20 @@ class Matrix {
     /**
      * @brief Does the math to access the value at the ith row and jth column.
      *
-     * @param x The row to index.
-     * @param y The column to index.
+     * @param i The row to index.
+     * @param j The column to index.
      * @return double The value at the ith row and jth column.
      */
-    double getIJ(int x, int y);
+    double getIJ(int i, int j);
 
     /**
      * @brief Does the math to set the element in the ith row and jth column.
      *
-     * @param x The row to index.
-     * @param y The column to index.
+     * @param i The row to index.
+     * @param j The column to index.
      * @param value The value to set the element at the i,j index to.
      */
-    void setXY(int x, int y, double value);
+    void setIJ(int i, int j, double value);
 
     /**
      * Accessor for the number or rows in the matrix.

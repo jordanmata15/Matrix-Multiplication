@@ -1,15 +1,27 @@
 #include "Matrix.hpp"
 
 Matrix::Matrix(int m, int n) : rows(m), cols(n) {
-    matrix = new double[m * n];
+    this->matrix = new double[m * n];
     this->reinitialize();
+}
+
+Matrix::Matrix(Matrix &matrixToCopy){
+    this->rows = matrixToCopy.getNumRows();
+    this->cols = matrixToCopy.getNumCols();
+    this->matrix = new double[this->rows*this->cols];
+
+    for (size_t i = 0; i < this->rows; ++i) {
+        for (size_t j = 0; j < this->cols; ++j) {
+            this->setIJ(i,j, matrixToCopy.getIJ(i,j));
+        }
+    }
 }
 
 Matrix::~Matrix() { delete[] matrix; }
 
 void Matrix::randomize(int limit) {
     srand(time(NULL));
-    for (int i = 0; i < rows * cols; ++i) {
+    for (size_t i = 0; i < rows * cols; ++i) {
         matrix[i] = limit * ((double)rand() / (double)limit);
         if (limit == 0) matrix[i] = 0;
     }
@@ -19,8 +31,8 @@ void Matrix::reinitialize() { this->randomize(0); }
 
 /* For printing with predefined delimeters */
 void Matrix::printMatrix() {
-    for (int i = 0; i < this->getNumRows(); ++i) {
-        for (int j = 0; j < this->getNumCols(); ++j) {
+    for (size_t i = 0; i < this->getNumRows(); ++i) {
+        for (size_t j = 0; j < this->getNumCols(); ++j) {
             std::cout << std::fixed << std::setprecision(5);
             if (this->getIJ(i, j) >= 0)  // align negative values
                 std::cout << " ";
@@ -32,9 +44,9 @@ void Matrix::printMatrix() {
 
 /* For printing with a custom delimeter between values */
 void Matrix::printMatrix(char charDelimeter) {
-    for (int i = 0; i < this->getNumRows(); ++i) {
-        for (int j = 0; j < this->getNumCols(); ++j) {
-            std::cout << std::fixed << std::setprecision(5);
+    for (size_t i = 0; i < this->getNumRows(); ++i) {
+        for (size_t j = 0; j < this->getNumCols(); ++j) {
+            //std::cout << std::fixed << std::setprecision(5);
             if (this->getIJ(i, j) >= 0)  // align negative values
                 std::cout << " ";
             std::cout << this->getIJ(i, j) << charDelimeter;
@@ -43,12 +55,12 @@ void Matrix::printMatrix(char charDelimeter) {
     }
 }
 
-double Matrix::getIJ(int x, int y) {
-    return matrix[y + this->getNumCols()*x];
+double Matrix::getIJ(int i, int j) {
+    return matrix[j + this->getNumCols()*i];
 }
 
-void Matrix::setXY(int x, int y, double value) {
-    matrix[y + this->getNumCols()*x] = value;
+void Matrix::setIJ(int i, int j, double value) {
+    matrix[j + this->getNumCols()*i] = value;
 }
 
 double *Matrix::getMatrix() { return this->matrix; }

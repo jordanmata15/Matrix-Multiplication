@@ -1,10 +1,13 @@
 #ifndef MATRIX_MULTIPLICATION_HPP
 #define MATRIX_MULTIPLICATION_HPP
 
+#include <math.h>
+#include <mpi.h>
+#include <sys/time.h>
+
 #include "ArgParser.hpp"
 #include "Matrix.hpp"
 #include "DataManager.hpp"
-#include <sys/time.h>
 
 #define ULIMIT 10   // largest value for each entry in a matrix
 #define NUM_ALGORITHMS 3
@@ -21,8 +24,10 @@ class MatrixMultiplication{
     Matrix* a;
     Matrix* b;
     Matrix* c;
-    DataManager* dataManager; // containers to hold the time benchmarks.
+    DataManager dataManager; // containers to hold the time benchmarks.
     int numThreads;
+    int numTiles;
+    int myRank;
 
   public:
     /**
@@ -35,8 +40,10 @@ class MatrixMultiplication{
      */
     MatrixMultiplication(Matrix* aInput, 
                           Matrix* bInput, 
-                          DataManager* dm,
-                          int numThreads);
+                          DataManager dm);
+
+    MatrixMultiplication(Matrix* aInput, 
+                          Matrix* bInput);
 
     /**
      * MatrixMultiplication Destructor that frees matrix C.
@@ -59,6 +66,17 @@ class MatrixMultiplication{
      * @return A matrix C which is the product of the objects fields A and B.
      */
     Matrix* multiply();
+
+    Matrix* multiply_parallel();
+    void rotate(int rank, int tileDim, int tilesPerDim, double* a, double* b, int rowsA, int rowsB, int maxDim);
+    int getStartIndex(int rank, int numCols, int tileDim);
+    void consolidateC(int rank, int numCols, int tileDim, int numTiles, double* c);
+    bool verify(Matrix* m);
+
+    int getRank(){ return myRank; }
+
+    Matrix* getResult(){ return c; }
+    void setThreadTiles(int numThreads, int numTiles);
 };
 
 #endif // MATRIX_MULTIPLICATION_HPP
