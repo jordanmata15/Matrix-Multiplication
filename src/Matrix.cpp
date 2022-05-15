@@ -10,8 +10,8 @@ Matrix::Matrix(Matrix &matrixToCopy){
     this->cols = matrixToCopy.getNumCols();
     this->matrix = new double[this->rows*this->cols];
 
-    for (size_t i = 0; i < this->rows; ++i) {
-        for (size_t j = 0; j < this->cols; ++j) {
+    for (int i = 0; i < this->rows; ++i) {
+        for (int j = 0; j < this->cols; ++j) {
             this->setIJ(i,j, matrixToCopy.getIJ(i,j));
         }
     }
@@ -21,7 +21,7 @@ Matrix::~Matrix() { delete[] matrix; }
 
 void Matrix::randomize(int limit) {
     srand(time(NULL));
-    for (size_t i = 0; i < rows * cols; ++i) {
+    for (int i = 0; i < rows * cols; ++i) {
         matrix[i] = limit * ((double)rand() / (double)limit);
         if (limit == 0) matrix[i] = 0;
     }
@@ -31,8 +31,8 @@ void Matrix::reinitialize() { this->randomize(0); }
 
 /* For printing with predefined delimeters */
 void Matrix::printMatrix() {
-    for (size_t i = 0; i < this->getNumRows(); ++i) {
-        for (size_t j = 0; j < this->getNumCols(); ++j) {
+    for (int i = 0; i < this->getNumRows(); ++i) {
+        for (int j = 0; j < this->getNumCols(); ++j) {
             std::cout << std::fixed << std::setprecision(5);
             if (this->getIJ(i, j) >= 0)  // align negative values
                 std::cout << " ";
@@ -44,8 +44,8 @@ void Matrix::printMatrix() {
 
 /* For printing with a custom delimeter between values */
 void Matrix::printMatrix(char charDelimeter) {
-    for (size_t i = 0; i < this->getNumRows(); ++i) {
-        for (size_t j = 0; j < this->getNumCols(); ++j) {
+    for (int i = 0; i < this->getNumRows(); ++i) {
+        for (int j = 0; j < this->getNumCols(); ++j) {
             //std::cout << std::fixed << std::setprecision(5);
             if (this->getIJ(i, j) >= 0)  // align negative values
                 std::cout << " ";

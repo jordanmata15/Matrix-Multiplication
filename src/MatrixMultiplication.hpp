@@ -3,6 +3,7 @@
 
 #include <math.h>
 #include <mpi.h>
+#include <omp.h>
 #include <sys/time.h>
 
 #include "ArgParser.hpp"
@@ -25,9 +26,11 @@ class MatrixMultiplication{
     Matrix* b;
     Matrix* c;
     DataManager dataManager; // containers to hold the time benchmarks.
+    int numSlices;
     int numThreads;
-    int numTiles;
     int myRank;
+    double timeElapsedOptimal;
+    double timeElapsedSubOptimal;
 
   public:
     /**
@@ -70,13 +73,17 @@ class MatrixMultiplication{
     Matrix* multiply_parallel();
     void rotate(int rank, int tileDim, int tilesPerDim, double* a, double* b, int rowsA, int rowsB, int maxDim);
     int getStartIndex(int rank, int numCols, int tileDim);
-    void consolidateC(int rank, int numCols, int tileDim, int numTiles, double* c);
+    void consolidateC(int rank, int sliceWidth, int numSlices, double* c);
     bool verify(Matrix* m);
 
     int getRank(){ return myRank; }
 
     Matrix* getResult(){ return c; }
     void setThreadTiles(int numThreads, int numTiles);
+
+    double getTimeElapsedOptimal();
+
+    double getTimeElapsedSubOptimal();
 };
 
 #endif // MATRIX_MULTIPLICATION_HPP

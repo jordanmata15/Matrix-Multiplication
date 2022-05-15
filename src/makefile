@@ -2,7 +2,7 @@ OPTLEVEL=
 PROGRAM=MatrixMultiplication
 CXX=mpic++
 CXXFLAGS=-std=c++11 -g -Wall $(OPTLEVEL)
-LDLIBS=-fopenmp
+LDLIBS=-fopenmp -lm
 
 # keep our cpp/hpp files separate from .o and executable
 SRCDIR=.
@@ -20,7 +20,7 @@ $(BUILD)/%.o: $(SRCDIR)/%.cpp $(SRCDIR)/%.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $< ${LDLIBS}
 
 run: all
-	mpirun -np 4 ${BUILD}/${PROGRAM} -M 4 -N 4 -P 4
+	mpirun -np 4 ${BUILD}/${PROGRAM} -M 1000 -N 100 -P 2
 # mpirun -np 4 ${BUILD}/${PROGRAM} -M 100 -N 1000 -P 10
 
 clean:

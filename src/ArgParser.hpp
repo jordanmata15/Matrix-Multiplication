@@ -7,7 +7,7 @@
 #include <math.h>
 
 #define DEFAULT_THREADS 1
-#define DEFAULT_TILES 1
+#define DEFAULT_SLICES 1
 #define INVALID -1
 #define USAGE "\nusage: ./MonteCarloApproximation -M rowsA -N colsA/colsB -P colsB <optional_flags>\n"\
               "\tMandatory flags with arguments:\n"\
@@ -16,7 +16,7 @@
               "\t\t-P reads in colsB\t\t(colsB \t\t> 0, integer)\n"\
               "\tOptional flags with arguments:\n"\
               "\t\t-n reads in NUM_THREADS\t\t(NUM_THREADS \t> 0, integer)\n"\
-              "\t\t-p reads in ALG_NUM\t(ALG_NUM either 0, 1, or 2)\n"\
+              "\t\t-p reads in NUM_SLICES. The number of partitions of A. \t(ALG_NUM either 0, 1, or 2)\n"\
               "\tOptional flags without arguments:\n"\
               "\t\t-a enables displaying matrices A/B one time each.\n"\
               "\t\t-c enables displaying matrix C one time for each algorithm.\n"
@@ -27,7 +27,7 @@
 class Arguments{
   public:
     int numThreads;
-    int numTiles;
+    int numSlices;
     int rowsA;
     int colsA;
     int rowsB;
@@ -39,7 +39,7 @@ class Arguments{
      * Basic constructor. sets default values.
      */
     Arguments():numThreads(DEFAULT_THREADS),
-                numTiles(DEFAULT_TILES),
+                numSlices(DEFAULT_SLICES),
                 rowsA(INVALID), 
                 colsA(INVALID), 
                 rowsB(INVALID), 
