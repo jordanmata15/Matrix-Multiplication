@@ -120,12 +120,18 @@ Matrix* MatrixMultiplication::multiply_parallel(){
 
 
 void MatrixMultiplication::consolidateC(int rank, int sliceWidth, int numSlices, double* c_raw){
-  int startIdx = rank*sliceWidth*c->getNumCols(),
+  int rowIdx    = rank*sliceWidth,
+      startIdx  = rowIdx*c->getNumCols(),
       receiveIdx;
+  bool isIncompleteSlice = rowIdx+sliceWidth > c->getNumRows();
+
+  if (isIncompleteSlice) sliceWidth = c->getNumRows()-rowIdx;
+
   MPI_Status status;
   MPI_Datatype sliceType;
   MPI_Type_vector(sliceWidth, c->getNumCols(), c->getNumCols(), MPI_DOUBLE, &sliceType);
   MPI_Type_commit(&sliceType);
+
 
   if (rank>0)
     MPI_Send(&c_raw[startIdx], 1, sliceType, 0, 0, MPI_COMM_WORLD);
