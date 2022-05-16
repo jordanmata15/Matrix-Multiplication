@@ -21,7 +21,16 @@ $(BUILD)/%.o: $(SRCDIR)/%.cpp $(SRCDIR)/%.hpp
 
 run: all
 	mpirun -np 4 ${BUILD}/${PROGRAM} -M 1000 -N 100 -P 2
-# mpirun -np 4 ${BUILD}/${PROGRAM} -M 100 -N 1000 -P 10
+
+benchmark: all
+	mpirun -np 1 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
+	mpirun -np 2 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
+	mpirun -np 4 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
+	mpirun -np 8 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
+	mpirun -np 16 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
+	mpirun -np 32 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
+	mpirun -np 64 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
+	mpirun -np 128 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
 
 clean:
 	rm -rf $(BUILD)/core* $(OBJS) $(BUILD)/$(PROGRAM)
