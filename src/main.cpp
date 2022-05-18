@@ -13,8 +13,8 @@ int main(int argc, char** argv){
   // Object that we can call to do each of the multiplication algorithms for us
   MatrixMultiplication matrixMult = MatrixMultiplication(a, b); 
 
-  // tell the matrixMult class how many slices and threads we are using
-  matrixMult.setThreadSlices(args->numThreads, args->numSlices);
+  // tell the matrixMult class how many threads we are using
+  matrixMult.setThreads(args->numThreads);
   
   // perform the matrix multiplication
   matrixMult.multiply_parallel();
@@ -23,7 +23,7 @@ int main(int argc, char** argv){
     return 0;
   else {
     // print out NUM_THREADS,NUM_SLICES,TIME_ELAPSED
-    std::cout << args->numThreads << "," << args->numSlices << "," << std::fixed << std::setprecision(10) << matrixMult.getTimeElapsedOptimal() << std::endl;
+    std::cout << std::fixed << std::setprecision(10) << matrixMult.getTimeElapsedOptimal() << std::endl;
   }
 
   delete a;

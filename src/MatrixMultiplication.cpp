@@ -25,9 +25,8 @@ MatrixMultiplication::MatrixMultiplication(Matrix* aInput,
 
 
 
-void MatrixMultiplication::setThreadSlices(int numThreads, int numSlices){
+void MatrixMultiplication::setThreads(int numThreads){
   this->numThreads = numThreads;
-  this->numSlices = numSlices;
 }
 
 
@@ -69,6 +68,12 @@ Matrix* MatrixMultiplication::multiply_parallel(){
 
   this->myRank = rank;
   this->numSlices = size;
+
+  if (this->numSlices > a_rows){
+    fprintf(stderr, "WARNING:\n");
+    fprintf(stderr, "Number of slices must be less than or equal to number of rows in A. Program will set numSlices to the number of columns of A.");
+    this->numSlices = a_rows;
+  }
  
   // ensure our numSlices evenly divides our number of rows of A
   if (a_rows % this->numSlices){

@@ -7,16 +7,14 @@
 #include <math.h>
 
 #define DEFAULT_THREADS 1
-#define DEFAULT_SLICES 1
 #define INVALID -1
-#define USAGE "\nusage: ./MonteCarloApproximation -M rowsA -N colsA/colsB -P colsB <optional_flags>\n"\
+#define USAGE "\nusage: ./MatrixMultiplication -M rowsA -N colsA/colsB -P colsB <optional_flags>\n"\
               "\tMandatory flags with arguments:\n"\
               "\t\t-M reads in rowsA\t\t(rowsA \t\t> 0, integer)\n"\
               "\t\t-N reads in colsA/colsB\t\t(colsA, colsB \t> 0, integer)\n"\
               "\t\t-P reads in colsB\t\t(colsB \t\t> 0, integer)\n"\
               "\tOptional flags with arguments:\n"\
               "\t\t-t reads in NUM_THREADS\t\t(NUM_THREADS \t> 0, integer)\n"\
-              "\t\t-s reads in NUM_SLICES. The number of partitions of A. \t(ALG_NUM either 0, 1, or 2)\n"\
 
 /**
  * @brief Arguments object to hold the values of the desired inputs given by the user.
@@ -24,7 +22,6 @@
 class Arguments{
   public:
     int numThreads;
-    int numSlices;
     int rowsA;
     int colsA;
     int rowsB;
@@ -34,7 +31,6 @@ class Arguments{
      * Basic constructor. sets default values.
      */
     Arguments():numThreads(DEFAULT_THREADS),
-                numSlices(DEFAULT_SLICES),
                 rowsA(INVALID), 
                 colsA(INVALID), 
                 rowsB(INVALID), 

@@ -13,12 +13,6 @@ int ArgParser::readInt(char flag, char* value){
 }
 
 bool ArgParser::validArgs(){
-  if (args->numSlices > args->rowsA){
-    fprintf(stderr, "WARNING:\n");
-    fprintf(stderr, "Number of slices must be less than or equal to number of rows in A. Program will set numSlices to the number of columns of A.");
-    args->numSlices = args->rowsA;
-  }
-
   return  args->rowsA > 0 &&
           args->colsA > 0 &&
           args->rowsB > 0 &&
@@ -28,21 +22,12 @@ bool ArgParser::validArgs(){
 Arguments* ArgParser::parseArgs(int argc, char** argv){
   int option;
 
-  while ( (option=getopt(argc,argv,"M:N:P:t:s:ac")) != -1 ){
+  while ( (option=getopt(argc,argv,"M:N:P:t:")) != -1 ){
     switch(option){
       case 't':
         args->numThreads = this->readInt(option, optarg);
         if (args->numThreads <= 0){
           fprintf(stderr,"Flag -%c expects an integer input greater than 0. Found: '%s'\n", option, optarg);
-          printUsage();
-          exit(1);
-        }
-        break;
-
-      case 's':
-        args->numSlices = this->readInt(option, optarg);
-        if (args->numSlices <= 0){
-          fprintf(stderr,"Flag -%c expects an integer input greater than 0 and a perfect square. Found: '%s'\n", option, optarg);
           printUsage();
           exit(1);
         }

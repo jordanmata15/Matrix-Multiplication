@@ -106,9 +106,8 @@ class MatrixMultiplication{
      * Used to tell the algorithm how many slices and threads to use.
      *
      * @param numThreads - The number of threads PER MPI process
-     * @param numSlices - The number of slices (number of MPI processes)
      */
-    void setThreadSlices(int numThreads, int numSlices);
+    void setThreads(int numThreads);
 
     /**
      * Get the time elapsed of the optimal algorithm.
