@@ -1,12 +1,13 @@
-OPTLEVEL=
+SRCDIR=.
+BUILD=../build
+
 PROGRAM=MatrixMultiplication
+EXE=${BUILD}/${PROGRAM}
+
+OPTLEVEL=
 CXX=mpic++
 CXXFLAGS=-std=c++11 -g -Wall $(OPTLEVEL)
 LDLIBS=-fopenmp -lm
-
-# keep our cpp/hpp files separate from .o and executable
-SRCDIR=.
-BUILD=../build
 
 SRC:=$(shell find $(SRCDIR)/ -name "*.cpp")
 OBJS:=$(SRC:%.cpp=$(BUILD)/%.o)
@@ -19,18 +20,10 @@ $(BUILD)/$(PROGRAM): $(OBJS)
 $(BUILD)/%.o: $(SRCDIR)/%.cpp $(SRCDIR)/%.hpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $< ${LDLIBS}
 
+# sample command of how to call the program on matrix A = (10000, 10000) and B = (10000, 10000)
+# with 5 MPI processes and 16 OpenMP threads PER process
 run: all
-	mpirun -np 4 ${BUILD}/${PROGRAM} -M 1000 -N 100 -P 2
-
-benchmark: all
-	mpirun -np 1 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
-	mpirun -np 2 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
-	mpirun -np 4 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
-	mpirun -np 8 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
-	mpirun -np 16 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
-	mpirun -np 32 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
-	mpirun -np 64 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
-	mpirun -np 128 ${BUILD}/${PROGRAM} -M 10000 -N 1000 -P 10000
+	mpirun -np 5 --mca btl vader,self --bind-to socket --map-by socket ${EXE} -M 10000 -N 10000 -P 10000 -t 16
 
 clean:
-	rm -rf $(BUILD)/core* $(OBJS) $(BUILD)/$(PROGRAM)
+	rm -rf $(BUILD)/core* $(OBJS) $(EXE)
