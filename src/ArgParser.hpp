@@ -15,11 +15,8 @@
               "\t\t-N reads in colsA/colsB\t\t(colsA, colsB \t> 0, integer)\n"\
               "\t\t-P reads in colsB\t\t(colsB \t\t> 0, integer)\n"\
               "\tOptional flags with arguments:\n"\
-              "\t\t-n reads in NUM_THREADS\t\t(NUM_THREADS \t> 0, integer)\n"\
-              "\t\t-p reads in NUM_SLICES. The number of partitions of A. \t(ALG_NUM either 0, 1, or 2)\n"\
-              "\tOptional flags without arguments:\n"\
-              "\t\t-a enables displaying matrices A/B one time each.\n"\
-              "\t\t-c enables displaying matrix C one time for each algorithm.\n"
+              "\t\t-t reads in NUM_THREADS\t\t(NUM_THREADS \t> 0, integer)\n"\
+              "\t\t-s reads in NUM_SLICES. The number of partitions of A. \t(ALG_NUM either 0, 1, or 2)\n"\
 
 /**
  * @brief Arguments object to hold the values of the desired inputs given by the user.
@@ -32,8 +29,6 @@ class Arguments{
     int colsA;
     int rowsB;
     int colsB;
-    bool displayAB;
-    bool displayC;
     
     /**
      * Basic constructor. sets default values.
@@ -43,9 +38,7 @@ class Arguments{
                 rowsA(INVALID), 
                 colsA(INVALID), 
                 rowsB(INVALID), 
-                colsB(INVALID),
-                displayAB(false), 
-                displayC(false){}
+                colsB(INVALID){}
 };
 
 

@@ -28,9 +28,9 @@ bool ArgParser::validArgs(){
 Arguments* ArgParser::parseArgs(int argc, char** argv){
   int option;
 
-  while ( (option=getopt(argc,argv,"M:N:P:n:t:ac")) != -1 ){
+  while ( (option=getopt(argc,argv,"M:N:P:t:s:ac")) != -1 ){
     switch(option){
-      case 'n':
+      case 't':
         args->numThreads = this->readInt(option, optarg);
         if (args->numThreads <= 0){
           fprintf(stderr,"Flag -%c expects an integer input greater than 0. Found: '%s'\n", option, optarg);
@@ -39,7 +39,7 @@ Arguments* ArgParser::parseArgs(int argc, char** argv){
         }
         break;
 
-      case 't':
+      case 's':
         args->numSlices = this->readInt(option, optarg);
         if (args->numSlices <= 0){
           fprintf(stderr,"Flag -%c expects an integer input greater than 0 and a perfect square. Found: '%s'\n", option, optarg);
@@ -74,14 +74,6 @@ Arguments* ArgParser::parseArgs(int argc, char** argv){
           printUsage();
           exit(1);
         }
-        break;
-
-      case 'a':
-        args->displayAB = true;
-        break;
-      
-      case 'c':
-        args->displayC = true;
         break;
 
       case '?':

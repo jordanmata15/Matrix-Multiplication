@@ -9,7 +9,7 @@ MatrixMultiplication::MatrixMultiplication(Matrix* aInput,
   b = bInput;
   c = new Matrix(a->getNumRows(), b->getNumCols());
   dataManager = dm;
-  this->numThreads = numThreads;
+  reinitializeC();
 }
 
 
@@ -20,12 +20,12 @@ MatrixMultiplication::MatrixMultiplication(Matrix* aInput,
   b = bInput;
   c = new Matrix(a->getNumRows(), b->getNumCols());
   dataManager = DataManager();
-  this->numThreads = numThreads;
+  reinitializeC();
 }
 
 
 
-void MatrixMultiplication::setThreadTiles(int numThreads, int numSlices){
+void MatrixMultiplication::setThreadSlices(int numThreads, int numSlices){
   this->numThreads = numThreads;
   this->numSlices = numSlices;
 }
@@ -48,11 +48,10 @@ void MatrixMultiplication::reinitializeC(){
 Matrix* MatrixMultiplication::multiply_parallel(){
   int size, 
       rank,
-      numSlices, 
       sliceWidth,
+      sliceStartIdx,
       a_rows = a->getNumRows(),
       a_cols = a->getNumCols(),
-      b_rows = b->getNumRows(),
       b_cols = b->getNumCols(),
       c_cols = c->getNumCols();
 
@@ -69,33 +68,30 @@ Matrix* MatrixMultiplication::multiply_parallel(){
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   this->myRank = rank;
-  numSlices = size;
-  if (a_rows < numSlices) numSlices = a_rows;
-  sliceWidth = ceil((double)a_rows/numSlices);
+  this->numSlices = size;
+ 
+  // ensure our numSlices evenly divides our number of rows of A
+  if (a_rows % this->numSlices){
+    if (rank==0){
+      fprintf(stderr, "ERROR:\n");
+      fprintf(stderr, "The algorithm only supports slices sizes that evenly divide the number of rows of A.\n");
+    }
+    exit(1);
+  }
+  sliceWidth = ceil((double)(a_rows/this->numSlices));
 
-  // if we have excessive number of partitions, exit out of the ones we don't need
-  if (rank >= size) return 0;
 
-  for (int i = 0; i < a_rows; ++i)
-    for (int j = 0; j < a_cols; ++j)
-        a->setIJ(i,j,i*a_cols+j);
-
-
-  for (int i = 0; i < b_rows; ++i)
-    for (int j = 0; j < b_cols; ++j)
-        b->setIJ(i,j,i*b_cols+j);
-
-  dataManager.startTimer();
+  dataManager.startTimer(); // MPI begins here
 
   // the row and index of our resulting matrix C
-  int sliceStartIdx = rank*sliceWidth*a_cols;
+  sliceStartIdx = rank*sliceWidth*a_cols;
 
   // pointers starting at our needed offsets
   localA = &a_raw[sliceStartIdx];
   localB = b_raw;
   localC = &c_raw[rank*sliceWidth*c_cols];
 
-  #pragma omp parallel for num_threads(1)
+  #pragma omp parallel for num_threads(this->numThreads)
   for (int i=0; i<sliceWidth; ++i){
     if (rank*sliceWidth+i >= a_rows) continue; // avoid reading past the end of the rows of A
     
@@ -109,6 +105,7 @@ Matrix* MatrixMultiplication::multiply_parallel(){
   }
   
   this->consolidateC(rank, sliceWidth, numSlices, c_raw);
+
   dataManager.stopTimer();
   this->timeElapsedOptimal = dataManager.getTimeElapsed();
 
@@ -120,24 +117,20 @@ Matrix* MatrixMultiplication::multiply_parallel(){
 
 
 void MatrixMultiplication::consolidateC(int rank, int sliceWidth, int numSlices, double* c_raw){
-  int rowIdx    = rank*sliceWidth,
-      startIdx  = rowIdx*c->getNumCols(),
+  int rowIdx          = rank*sliceWidth,
+      startIdx        = rowIdx*c->getNumCols(),
       receiveIdx;
-  bool isIncompleteSlice = rowIdx+sliceWidth > c->getNumRows();
-
-  if (isIncompleteSlice) sliceWidth = c->getNumRows()-rowIdx;
-
+  
   MPI_Status status;
   MPI_Datatype sliceType;
   MPI_Type_vector(sliceWidth, c->getNumCols(), c->getNumCols(), MPI_DOUBLE, &sliceType);
   MPI_Type_commit(&sliceType);
 
-
   if (rank>0)
     MPI_Send(&c_raw[startIdx], 1, sliceType, 0, 0, MPI_COMM_WORLD);
 
   if (rank==0){
-    for (int sendingRank=1; sendingRank<numSlices; ++sendingRank){
+    for (int sendingRank=1; sendingRank<this->numSlices; ++sendingRank){
       receiveIdx = sendingRank*sliceWidth*c->getNumCols();
       MPI_Recv(&c_raw[receiveIdx], 1, sliceType, sendingRank, 0, MPI_COMM_WORLD, &status);
     }
@@ -163,7 +156,7 @@ Matrix* MatrixMultiplication::multiply(){
   
   dataManager.startTimer();
 
-  #pragma omp parallel for num_threads(this->numThreads)
+  #pragma omp parallel for num_threads(this->numThreads*this->numSlices)
   for (int i=0; i<a_rows; ++i){
     for (int k=0; k<a_cols; ++k){
       double r = a_raw[i*a_cols+k];
@@ -179,19 +172,13 @@ Matrix* MatrixMultiplication::multiply(){
   return c;
 }
 
-bool MatrixMultiplication::verify(Matrix* m){
-  this->multiply(); // run multiplication and overwrite the old copy of C with a verified algorithm
-  
-  for (int i=0; i<c->getNumRows(); ++i)
-    for (int j=0; j<c->getNumCols(); ++j)
-       if (this->c->getIJ(i,j) != m->getIJ(i,j)) return false;
-    
-  return true;
-}
+
 
 double MatrixMultiplication::getTimeElapsedOptimal(){
   return this->timeElapsedOptimal;
 }
+
+
 
 double MatrixMultiplication::getTimeElapsedSubOptimal(){
   return this->timeElapsedSubOptimal;

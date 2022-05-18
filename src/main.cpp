@@ -13,38 +13,17 @@ int main(int argc, char** argv){
   // Object that we can call to do each of the multiplication algorithms for us
   MatrixMultiplication matrixMult = MatrixMultiplication(a, b); 
 
-
-  Matrix  * product,
-          * copy;
-
-  product = matrixMult.multiply_parallel();
-  matrixMult.setThreadTiles(args->numThreads, args->numSlices);
-
-  if (matrixMult.getRank() != 0) return 0;
-
-  int verifyResult = 0;
-  verifyResult = 1;
-
-  if (verifyResult){
-    copy = new Matrix(*product); // create a deep copy so we can validate if they are the same
-    matrixMult.reinitializeC();
-
-    if (0 && !matrixMult.verify(copy)){
-      fprintf(stderr, "The matrix multiplication failed!!!\n");
-      std::cout << "\nOutput calculated:" << std::endl;
-      //copy->printMatrix('\t');
-      std::cout << "\nOutput expected:" << std::endl;
-      //matrixMult.getResult()->printMatrix('\t');
-      return -1;
-    }
-    else {
-      std::cout << "Matrix multiplication succeeded!" << std::endl;
-    }
-  }
-
-  if (1){
-    std::cout << std::fixed << std::setprecision(10) << matrixMult.getTimeElapsedOptimal() << std::endl;
-    std::cout << std::fixed << std::setprecision(10) << matrixMult.getTimeElapsedSubOptimal() << std::endl;
+  // tell the matrixMult class how many slices and threads we are using
+  matrixMult.setThreadSlices(args->numThreads, args->numSlices);
+  
+  // perform the matrix multiplication
+  matrixMult.multiply_parallel();
+  
+  if (matrixMult.getRank() != 0)
+    return 0;
+  else {
+    // print out NUM_THREADS,NUM_SLICES,TIME_ELAPSED
+    std::cout << args->numThreads << "," << args->numSlices << "," << std::fixed << std::setprecision(10) << matrixMult.getTimeElapsedOptimal() << std::endl;
   }
 
   delete a;

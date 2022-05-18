@@ -28,12 +28,23 @@ class DataManager{
      */
     DataManager(std::string fileNameIn);
     
+    /**
+     * Start the timer object (gets current time).
+     *
+     */
     void startTimer();
 
+    /**
+     * Stop the timer object (gets current time).
+     *
+     */
     void stopTimer();
 
+    /**
+     * Get the time elapsed in seconds (with decimal) between start and stopping of the timer.
+     *
+     */
     double getTimeElapsed();
-    
 };
 
 #endif // DATA_MANAGER_HPP

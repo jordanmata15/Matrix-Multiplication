@@ -22,8 +22,8 @@ Matrix::~Matrix() { delete[] matrix; }
 void Matrix::randomize(int limit) {
     srand(time(NULL));
     for (int i = 0; i < rows * cols; ++i) {
-        matrix[i] = limit * ((double)rand() / (double)limit);
         if (limit == 0) matrix[i] = 0;
+        else matrix[i] = limit * ((double)rand() / (double)limit);
     }
 }
 
