@@ -11,7 +11,6 @@
 #include "DataManager.hpp"
 
 #define ULIMIT 10   // largest value for each entry in a matrix
-#define NUM_ALGORITHMS 3
 #define NEW_SECTION "\n*******************************************\n"
 
 /**
